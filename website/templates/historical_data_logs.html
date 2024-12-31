@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+  <div class="container" style="width: 95%;">
+    <h1>Historical Data Logs</h1>
+    {% if tables %}
+    <div class="card">
+        <div class="card-body">
+            <br>
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <!-- <th scope="col"><input type="checkbox"></th> -->
+                        <th scope="col">ID</th>
+                        <th scope="col">DataLogs</th>
+                        <th scope="col">#</th>
+                    </tr>
+                </thead>
+                {% for table in tables %}
+                <tbody class="table-group-divider">
+                    <tr>
+                        <!-- <th scope="row"><input type="checkbox"></th> -->
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ table.table_name }}</td>
+                        <td><a class="btn btn-dark" href="{% url 'historical_data' table.table_head %}">Show</a></td>
+
+                    </tr>
+                </tbody>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <h1>No Historical Data Available</h1>
+
+    {%endif%}
+
+</div>
+
+
+{% endblock %}

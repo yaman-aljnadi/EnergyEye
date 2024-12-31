@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="row" style="margin-right: 10px;">
+    <div class="container">
+        <div class="card" style="background-color: #23272b;">
+            <div class="card-body">
+
+                <h1 style="color: white;"> Devices {% if is_admin %} <a class="btn btn-light float-end"
+                        href="{% url 'add_device' %}" role="button"><i class="fa-solid fa-plus"></i></a> {% endif %}
+                </h1>
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <!-- <th scope="col"><input type="checkbox"></th> -->
+                            <th scope="col" id="">ID</th>
+                            <th scope="col" id="">Device Name</th>
+                            <th scope="col" id="">Device Group</th>
+                            <th scope="col" id="">Connection Type</th>
+                            <th scope="col" id="">Activation</th>
+                            <th scope="col" id="">Manufacturer</th>
+                            <th scope="col" id="">Device Status</th>
+                            {% if is_admin %}
+                            <th scope="col">#</th>
+                            {% endif %}
+
+                        </tr>
+                    </thead>
+                    {% if devices %}
+                    {% for device in devices %}
+                    <tbody class="table-group-divider">
+                        <tr>
+                            <!-- <th scope="row"><input type="checkbox"></th> -->
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ device.device_name }}</td>
+                            <td>{{ device.group }}</td>
+                            <td>{{ device.connection_type }} : {{ device.port_conf }}</td>
+                            <td>{{ device.signals }}</td>
+                            <td>{{ device.manufacturer }}</td>
+                            <td class="device_status">{{ device.device_status }}</td>
+                            {% if is_admin %}
+                            <td>
+                                <a class="btn btn-dark" href='{% url "update_device" device.id %}' style="margin-right: 10px;"><i class="fa-solid fa-pen-to-square"></i></a>
+
+                                <a class="btn btn-danger confirm-delete" href='{% url "delete_device" device.id %}'><i class="fa-solid fa-trash"></i></a>
+                            </td>
+                            {% endif %}
+
+                        </tr>
+                    </tbody>
+                    {% endfor %}
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p>!!!Warning: Deleting a device will also delete all related data such as Registers, Data Logs, etc. Are you
+            sure you want to proceed?</p>
+        <button id="confirmDeleteBtn" class="btn btn-danger">Yes, delete</button>
+    </div>
+</div>
+
+
+
+<script>
+    const elements = document.querySelectorAll('.device_status');
+
+    elements.forEach(element => {
+        console.log(element.innerText.trim())
+        if (element.innerText.trim() == 'Offline') {
+            element.style.color = 'red'
+        }
+        else {
+            element.style.color = 'green'
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var deleteLinks = document.querySelectorAll('.confirm-delete');
+        var modal = document.getElementById("deleteModal");
+        var confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+        var closeBtn = document.querySelector(".close");
+        var deleteURL; // Variable to store the deletion URL
+
+        deleteLinks.forEach(function (link) {
+            link.addEventListener('click', function (event) {
+                event.preventDefault(); // Prevent the default link behavior
+                modal.style.display = "block"; // Display the modal
+                deleteURL = link.getAttribute('href'); // Store the deletion URL
+            });
+        });
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        // Close the modal when the user clicks on the close button
+        closeBtn.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        // Proceed with the deletion when the user clicks on confirm
+        confirmDeleteBtn.onclick = function () {
+            // Check if deleteURL is defined
+            if (deleteURL) {
+                window.location.href = deleteURL;
+            }
+        }
+    });
+
+</script>
+
+
+<style>
+    /* CSS for modal styling */
+    .modal {
+        display: none;
+        /* Hidden by default */
+        position: fixed;
+        /* Stay in place */
+        z-index: 1;
+        /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%;
+        /* Full width */
+        height: 100%;
+        /* Full height */
+        overflow: auto;
+        /* Enable scroll if needed */
+        background-color: rgba(0, 0, 0, 0.4);
+        /* Black w/ opacity */
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+</style>
+
+{% endblock %}

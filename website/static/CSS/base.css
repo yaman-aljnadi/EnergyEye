@@ -1,0 +1,13 @@
+#sidebar {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    background-color: #23272b;
+  }
+  
+#SideText{
+    color: white;
+    text-decoration: none;
+    font-size: 1.2rem;
+}

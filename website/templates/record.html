@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="card">
+    <div class="card-header">
+        {{ request.user }}
+        {{ customer_record.last_name }}
+    </div>
+    <div class="card-body">
+        <p class="card-text">
+            {{ customer_record.phone }}<br />
+            {{ customer_record.Address }}<br />
+            {{ customer_record.city }}<br />
+            {{ customer_record.state }}<br />
+            {{ customer_record.zipcode }}<br />
+            {{ customer_record.created_at }}<br />
+            {{ customer_record.id }}<br />
+        </p>
+    </div>
+</div>
+
+<br />
+<br />
+
+<a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
+
+
+{% endblock %}

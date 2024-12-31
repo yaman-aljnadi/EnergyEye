@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+<script>
+    $('select').selectpicker();
+  </script>
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
+{{ form.media }}
+
+
+<div class="col-md-6 offset-md-3">
+    <h1 style="text-align: center;">Add Report</h1>
+    <br />
+
+    <form method="POST" action="{% url 'add_report' %}" class="row g-4">
+        {% csrf_token %}
+        <div class="col-md-6"> Devices
+            {{ form.report_device }}
+        </div>
+        <div class="col-md-6"> Measures
+            {{ form.report_measure }}
+        </div>
+        <div class="col-md-12">
+            Description
+            {{ form.report_description }}
+        </div>
+
+        <div class="col-md-4">
+            Report Day
+            {{ form.report_activation }}
+        </div>
+        <div class="col-md-4">
+            Hour
+            {{ form.report_interval_hours }}
+        </div>
+        <div class="col-md-4">
+            Minute
+            {{ form.report_interval_minutes }}
+        </div>
+
+        <div class="col-md-6">
+            Email
+            {{ form.report_emails }}
+        </div>
+        <div class="col-md-6">
+            TimeZone
+            {{ form.report_timezone }}
+        </div>
+        <div class="col-md-6">
+            Status
+            {{ form.report_status }}
+        </div>
+
+        <div class="col-md-6">
+            Date Type
+            {{ form.report_date_type }}
+        </div>
+
+
+        <button type="submit" class="btn btn-primary">Create Report</button>
+    </form>
+</div>
+
+<script>
+    $(document).ready(function() {
+        function updateMeasureOptions() {
+            var selectedDevices = $('#id_report_device').val();
+            var allMeasures = $('#id_report_measure option');
+            console.log(selectedDevices)
+            allMeasures.each(function() {
+                var measure = $(this);
+                measureDevices = measure.val()
+                
+                if (selectedDevices == null){
+                    measure.hide();
+                }
+                else if (selectedDevices.some(device => measureDevices.includes(device))) {
+                    measure.show();
+                } else {
+                    measure.hide();
+                }
+            });
+
+            $('#id_report_measure').selectpicker('refresh');
+        }
+
+        $('#id_report_device').on('changed.bs.select', updateMeasureOptions);
+        updateMeasureOptions(); // Initial call to set the correct state
+    });
+</script>
+
+{% endblock %}

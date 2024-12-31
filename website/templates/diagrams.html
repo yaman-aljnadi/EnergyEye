@@ -1,0 +1,261 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+    #main {
+        width: 100%;
+        height: 87vh;
+        box-sizing: border-box;
+        /* border: 1px solid red; */
+        /* float: left; */
+    }
+
+    #chart-popup {
+        position: absolute;
+        background-color: white;
+        border: 1px solid #ccc;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        display: none;
+        z-index: 1000;
+    }
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<div class="col">
+    <div id="main-coinatiner">
+        <div id="main"></div>
+    </div>
+</div>
+
+
+<div class="card" style="width: 20vw; background-color: #dcdcdc;" id="chart-popup">
+    <div class="card-body" style="font-size: 1.5vh;">
+        <h5 class="card-title" id="popup-title">Card title</h5>
+        <h6 class="card-subtitle mb-2 text-body-secondary" id="popup-subtitle">Card subtitle</h6>
+        <p class="card-text" id="popup-text1">Some quick example text</p>
+        <p class="card-text" id="popup-text2">Some quick example text</p>
+
+        <div class="p-3 text-primary-emphasis bg-emphasis-subtle border border-secondary-subtle rounded-3"
+            id="footer_elements">
+            <div class="d-flex justify-content-between">
+                <span id="chart_1_1">NaN</span>
+                <span id="chart_1_1_measure">0</span>
+            </div>
+        </div>
+        <div class="p-3 text-primary-emphasis bg-emphasis-subtle border border-secondary-subtle rounded-3"
+            id="footer_elements">
+            <div class="d-flex justify-content-between">
+                <span id="chart_2_1">NaN</span>
+                <span id="chart_2_1_measure">0</span>
+            </div>
+        </div>
+        <div class="p-3 text-primary-emphasis bg-emphasis-subtle border border-secondary-subtle rounded-3"
+            id="footer_elements">
+            <div class="d-flex justify-content-between">
+                <span id="chart_3_1">NaN</span>
+                <span id="chart_3_1_measure">0</span>
+            </div>
+        </div>
+        <div class="p-3 text-primary-emphasis bg-emphasis-subtle border border-secondary-subtle rounded-3"
+            id="footer_elements">
+            <div class="d-flex justify-content-between">
+                <span id="chart_4_1">NaN</span>
+                <span id="chart_4_1_measure">0</span>
+            </div>
+        </div>
+        <div class="p-3 text-primary-emphasis bg-emphasis-subtle border border-secondary-subtle rounded-3"
+            id="footer_elements">
+            <div class="d-flex justify-content-between">
+                <span id="chart_5_1">NaN</span>
+                <span id="chart_5_1_measure">0</span>
+            </div>
+        </div>
+        <div class="p-3 text-primary-emphasis bg-emphasis-subtle border border-secondary-subtle rounded-3"
+            id="footer_elements">
+            <div class="d-flex justify-content-between">
+                <span id="chart_6_1">NaN</span>
+                <span id="chart_6_1_measure">0</span>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        const container = document.getElementById("main");
+        const popup = document.getElementById("chart-popup");
+        const h1 = document.getElementById("node-name");
+        const chart = echarts.init(container);
+        const exampleUrl = "{% url 'diagrams_device' '1' %}";
+
+        // Define an array of colors for the groups
+        const groupColors = [
+            "black", "#4b50a3", " #943a77", "#39893a", "#6c3989", "#894439",
+            "black", "#4b50a3", " #943a77", "#39893a", "#6c3989", "#894439",
+            "black", "#4b50a3", " #943a77", "#39893a", "#6c3989", "#894439",
+            "black", "#4b50a3", " #943a77", "#39893a", "#6c3989", "#894439",
+            "black", "#4b50a3"
+        ];
+
+        // Fetch the data from the server
+        $.getJSON("{% url 'device_tree_view' %}", function (data) {
+            console.log(data)
+            let selectedNode = "";
+
+            // Calculate positions and background colors for each group
+            const totalGroups = data.length;
+            const groupHeight = 100 / totalGroups; // Percentage height for each group
+
+            // Create series data for each group
+            const seriesData = data.map((group, index) => ({
+                name: group.name,
+                type: "tree",
+                left: '10%',
+                right: '10%',
+                top: `${index * groupHeight + 5}%`, // Adding some margin
+                bottom: `${(totalGroups - index - 1) * groupHeight + 5}%`, // Adding some margin
+                roam: false,
+                data: [group],
+                orient: "TB",
+                symbol: "rect",
+                // symbolSize: [120, 250],
+
+                expandAndCollapse: false,
+                label: {
+                    verticalAlign: "top",
+                    backgroundColor: "white", // Assign color based on index
+                    borderWidth: 80,
+                    borderRadius: 3,
+                    shadowColor: "#23272b",
+                    color: "#23272b",
+                    verticalAlign: 'middle',
+                    shadowBlur: 10,
+                    shadowOffsetX: 5,
+                    shadowOffsetY: 5,
+                    offset: [0, -20],
+                    lineOverflow: "truncate",
+                    formatter: (params) => {
+                        // Get current node object
+                        const label = [];
+                        if (selectedNode === params.value) {
+                            label.push([`{highlightedHeadLine|}`]);
+                        } else {
+                            label.push([`{headLine|}`]);
+                        }
+                        label.push([`\n {nodeName| ${params.value.slice(0, 20) + (params.value.length > 20 ? "..." : "")}}  \n`].join(``));
+                        return label.join("\n");
+                    },
+                    rich: {
+                        headLine: {
+                            width: '100%',
+                            height: 5,
+                            backgroundColor: groupColors[index % groupColors.length],
+                            position: "absolute",
+                            align: "top"
+                        },
+                        nodeName: {
+                            align: "left",
+                            fontWeight: "bold",
+                            verticalAlign: "top",
+                            color: "#727272",
+                            fontSize: 13,
+                            height: 10
+                        },
+                        idrmRole: {
+                            color: "#727272",
+                            padding: [2, 5]
+                        },
+                        applicationRole: {
+                            color: "#727272",
+                            padding: [20, 5]
+                        },
+                    }
+                }
+            }));
+
+            // Create graphic components for background colors
+            const graphicComponents = data.map((group, index) => ({
+                type: 'rect',
+                left: '10%',
+                right: '10%',
+                top: `${index * groupHeight + 5}%`, // Adding some margin
+                bottom: `${(totalGroups - index - 1) * groupHeight + 5}%`, // Adding some margin
+                z: 0, // Make sure the background is behind the series
+            }));
+
+            chart.setOption({
+                graphic: graphicComponents,
+                series: seriesData
+            });
+
+            chart.on("mouseover", function (event) {
+                console.log('Mouseover event:', event);
+
+                const device_id = Number(event.data.name);
+                const deviceUrl = `{% url 'device_tree_view_element' 0 %}`.replace('0', device_id);
+
+                $.ajax({
+                    url: deviceUrl,
+                    method: 'GET',
+                    success: function (response) {
+                        console.log(response);
+                        document.getElementById("popup-title").innerText = event.data.value;
+                        document.getElementById("popup-subtitle").innerText = `Device Status: ${response.device_status}`;
+                        document.getElementById("popup-text1").innerText = `Total alarms: ${response.total_alarms} \n Triggered Alarms: ${response.triggered_alarms}`;
+                        document.getElementById("popup-text2").innerText = `Num Registered Measures: ${response.total_registers}`;
+
+                        for (let i = 0; i < 6; i++) {
+                            document.getElementById(`chart_${i + 1}_1`).innerText = response.chart[i];
+                            document.getElementById(`chart_${i + 1}_1_measure`).innerText = response.chart_measure[i];
+                        }
+
+                        // Temporarily display the popup to get dimensions
+                        popup.style.display = 'block';
+                        const popupWidth = popup.offsetWidth;
+                        const popupHeight = popup.offsetHeight;
+                        popup.style.display = 'none';
+
+                        const containerRect = container.getBoundingClientRect();
+                        let x = event.event.offsetX;
+                        let y = event.event.offsetY;
+
+                        if (x + popupWidth > containerRect.width) {
+                            x -= popupWidth; // Add a little offset
+                        }
+
+                        if (y + popupHeight > containerRect.height) {
+                            y -= (popupHeight - 400); // Add a little offset
+                        }
+
+                        popup.style.left = `${x - 200}px`;
+                        popup.style.top = `${y}px`;
+                        popup.style.display = 'block';
+                    }
+                });
+            });
+
+            chart.on("mouseout", function () {
+                // Hide the popup
+                popup.style.display = 'none';
+            });
+
+            chart.on("click", function (event) {
+                // console.log('Click event:', event);
+                const nodeName = event.name;
+                const targetUrl = exampleUrl.replace('1', nodeName); // Construct the URL based on the node name
+                window.location.href = targetUrl;
+            });
+        });
+
+        window.addEventListener('resize', function () {
+            // Resize container and chart
+            container.style.width = '100%';
+            container.style.height = '87vh';
+            chart.resize();
+        });
+    });
+</script>
+{% endblock %}

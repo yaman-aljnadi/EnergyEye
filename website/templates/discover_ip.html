@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- <div class="col-md-6 offset-md-3"> -->
+
+<h1>IP scanning</h1>
+<br>
+<br>
+
+<div class="col-md-6 offset-md-3">
+    <h5>!!! Please pay attention that IP scanning takes a long time to process so please be patient. Doing a full range
+        scan could take up to 10 minutes. if available consider using outside scanning tools. </h5>
+
+    <br>
+
+    <form method="post" class="row g-2" onsubmit="ShowLoading()">
+        {% csrf_token %}
+        <div class="col">
+            {{ form.IP_section1 }}
+        </div>
+        <br>
+        <br>
+        <br>
+        .
+        <div class="col">
+            {{ form.IP_section2 }}
+        </div>
+        <br>
+        <br>
+        <br>
+        .
+        <div class="col">
+            {{ form.IP_section3 }}
+        </div>
+        <br>
+        <br>
+        <br>
+        .
+        <div class="col">
+            {{ form.start_ip }}
+        </div>
+        <br>
+        <br>
+        /
+        <div class="col">
+            {{ form.end_ip }}
+        </div>
+        <button type="submit" class="btn btn-primary">Scan</button>
+    </form>
+
+    <br>
+
+    <div id="loadingDiv" style="display: none;">
+        <div class="d-flex align-items-center justify-content-center">Scanning
+            <div class="loader" style="margin-left: 10px;"></div>
+        </div>
+    </div>
+
+</div>
+
+
+<style>
+    .loader {
+        border: 16px solid #f3f3f3;
+        /* Light grey */
+        border-top: 16px solid #3498db;
+        /* Blue */
+        border-radius: 50%;
+        width: 3rem;
+        height: 3rem;
+        animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
+<script>
+
+function ShowLoading() {
+
+    document.getElementById("loadingDiv").style.display = "block";
+}
+
+</script>
+
+
+{% endblock %}

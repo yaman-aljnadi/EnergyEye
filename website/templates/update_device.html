@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="col-md-6 offset-md-3">
+    <h1 style="text-align: center;">Update Device</h1>
+    <h3 style="text-align: center;">Device: {{ device_record.device_name }}</h3>
+    <br />
+    <form method="POST" action="">
+        {% csrf_token %}
+        <div id="deviceFields" class="row g-2">
+            {{ form.device_name }}
+            {{ form.connection_type }}
+            <div id="tcpFields" class="">
+                {{ form.ip_address }}
+            </div>
+            {{ form.port_conf }}
+            <div id="rtuFields" class="col-md-6">
+                {{ form.stop_bits }}
+                {{ form.byte_size }}
+                {{ form.parity }}
+                {{ form.baud_rate }}
+                {{ form.timeout }}
+            </div>
+            {{ form.signals }}
+            {{ form.manufacturer }}
+
+            {{form.group}}
+
+        </div>
+        </br>
+        <button type="submit" class="btn btn-primary">Update</button>
+    </form>
+</div>
+
+
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var connectionTypeField = document.getElementById('id_connection_type');
+        var tcpFields = document.getElementById('tcpFields');
+        var rtuFields = document.getElementById('rtuFields');
+
+        // Hide RTU fields initially
+        rtuFields.style.display = 'none';
+
+        // Function to show/hide fields based on connection type
+        function toggleFields() {
+            if (connectionTypeField.value === 'TCP') {
+                tcpFields.style.display = 'block';
+                rtuFields.style.display = 'none';
+                document.getElementById('id_ip_address').setAttribute('required', 'required');
+                document.getElementById('id_stop_bits').removeAttribute('required');
+                document.getElementById('id_byte_size').removeAttribute('required');
+                document.getElementById('id_parity').removeAttribute('required');
+                document.getElementById('id_baud_rate').removeAttribute('required');
+                document.getElementById('id_timeout').removeAttribute('required');
+
+            } else if (connectionTypeField.value === 'RTU') {
+                tcpFields.style.display = 'none';
+                rtuFields.style.display = 'block';
+                document.getElementById('id_ip_address').removeAttribute('required');
+                document.getElementById('id_stop_bits').setAttribute('required', 'required');
+                document.getElementById('id_byte_size').setAttribute('required', 'required');
+                document.getElementById('id_parity').setAttribute('required', 'required');
+                document.getElementById('id_baud_rate').setAttribute('required', 'required');
+                document.getElementById('id_timeout').setAttribute('required', 'required');
+            }
+        }
+
+        // Call the function initially and on change of connection type
+        toggleFields();
+        connectionTypeField.addEventListener('change', toggleFields);
+    });
+
+</script>
+{% endblock %}

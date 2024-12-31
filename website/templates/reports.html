@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.7/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+{{ form.media }}
+
+<div class="row" style="margin-right: 10px;">
+    <div class="container">
+        <div class="card" style="background-color: #23272b;">
+            <div class="card-body">
+
+                <h1 style="color: white;"> Reports {% if is_admin %} <a class="btn  btn-light float-end"
+                        href="{% url 'add_report' %}" role="button"><i class="fa-solid fa-plus"></i></a> {% endif %}
+                </h1>
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <!-- <th scope="col"><input type="checkbox"></th> -->
+                            <th scope="col">ID</th>
+                            <th scope="col">Devices</th>
+                            <th scope="col">Measures</th>
+                            <th scope="col">Interval</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Type</th>
+                            {% if is_admin %}
+                            <th scope="col">#</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    {% if reports %}
+                    {% for report in reports %}
+                    <tbody class="table-group-divider">
+                        <tr>
+                            <!-- <th scope="row"><input type="checkbox"></th> -->
+                            <td>{{ forloop.counter }}<button class="btn btn-sm toggle-collapse" type="button" data-target="#Device_List{{report.id}}"><i
+                                    class="fa-solid fa-arrow-down"></i></button></td>
+
+                            <td>Total {{ report.report_device_length }}
+                            </td>
+
+                            <td>Readings {{ report.report_measure_length }}</td>
+
+                            <td>{{ report.report_activation }} {{ report.report_interval_hours}}:{{report.report_interval_minutes }} {{report.report_timezone }}</td>
+                            <td>{{ report.report_description }}</td>
+                            <td>{{ report.report_status }}</td>
+                            <td>{{ report.report_type }}</td>
+
+                            {% if is_admin %}
+                            <td>
+                                <a class="btn btn-dark" href='{% url "update_report" report.id %}' style="margin-right: 10px;"><i
+                                        class="fa-solid fa-pen-to-square"></i></a>
+                                <a class="btn btn-danger" href='{% url "delete_report" report.id %}'><i
+                                        class="fa-solid fa-trash"></i></a>
+                            </td>
+                            {% endif %}
+
+                        <tr>
+                            <td colspan="10">
+                                <div class="collapsible" id="Device_List{{report.id}}" style="overflow: hidden; transition: height 0.3s ease;">
+
+                                    <form method="get" action="{% url 'download_report' report.id %}">
+                                        <div class="row">
+                                            <div>Export Report</div>
+                                            <div class="col-4" id="report_date_type_{{ report.id }}">{{ form.report_date_type }}</div>
+                                            <div class="col-4" id="report_date_from_{{ report.id }}">{{ form.report_date_from }}</div>
+                                            <div class="col-3" id="report_date_to_{{ report.id }}">{{ form.report_date_to }}</div>
+                                            <div class="col-1">
+                                                <div class="row">
+                                                    <button type="submit" class="btn col-5" style="margin-right: 3px; background-color: #c4c2c2;"><i class="fa-solid fa-arrow-up-from-bracket"></i></button>
+                                                    <a class="btn col-5" href="{% url 'send_report' report.id %}" style="background-color: #c4c2c2;"><i class="fa-solid fa-envelope"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </form>
+                                    <!-- <a class="btn btn-info" href="{% url 'download_report' report.id %}">Download</a> -->
+
+                                    <div class="row">
+                                        <div class="col-6" style="padding-right: 6px;">
+                                            <div>Selected Devices</div>
+                                            <div class="card card-body">
+                                                {% for item1, item2 in report.devices_measures_list %}
+                                                <p>{{item1}} </p>
+                                                {% endfor %}
+
+                                            </div>
+                                        </div>
+                                        <div class="col-6" style="padding-left: 6px;">
+                                            <div>Selected Measures</div>
+                                            <div class="card card-body">
+                                                {% for item1, item2 in report.devices_measures_list %}
+                                                <p>{{item2}} </p>
+                                                {% endfor %}
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                    {% endfor %}
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        // Function to toggle visibility of date fields
+        function toggleDateFields(reportId) {
+            const selectedValue = $(`#report_date_type_${reportId} select`).val();
+            if (selectedValue === 'Last_Record') {
+                $(`#report_date_from_${reportId}`).hide();
+                $(`#report_date_to_${reportId}`).hide();
+            } else if (selectedValue === 'From_To') {
+                $(`#report_date_from_${reportId}`).show();
+                $(`#report_date_to_${reportId}`).show();
+            }
+        }
+
+        // Loop through each report and initialize visibility and event listeners
+        $('.table-group-divider').each(function () {
+            const reportId = $(this).find('.collapsible').attr('id').replace('Device_List', '');
+            
+            // Initialize the visibility based on the default selected value
+            toggleDateFields(reportId);
+
+            // Add change event listener to the report date type field
+            $(`#report_date_type_${reportId} select`).change(function () {
+                toggleDateFields(reportId);
+            });
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+    // Select all collapse buttons
+    const collapseButtons = document.querySelectorAll('.toggle-collapse');
+
+    collapseButtons.forEach(function(button) {
+      button.addEventListener('click', function() {
+        // Get the target collapsible element based on the data-target attribute
+        const target = document.querySelector(button.getAttribute('data-target'));
+        
+        // Check if the target is collapsed or expanded
+        if (target.style.height === '0px' || target.style.height === '') {
+          // Expand: Set height to the scroll height of the content
+          target.style.height = target.scrollHeight + 'px';
+        } else {
+          // Collapse: Set height to 0
+          target.style.height = '0px';
+        }
+      });
+    });
+
+    // Set all collapsible sections to 0 height initially
+    const collapsibles = document.querySelectorAll('.collapsible');
+    collapsibles.forEach(function(collapsible) {
+      collapsible.style.height = '0px';
+    });
+  });
+</script>
+
+{% endblock %}

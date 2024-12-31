@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+
+
+
+<div class="row" style="margin-right: 10px;">
+    <div class="col">
+        <div class="card" style="background-color: #23272b;">
+            <div class="card-body">
+
+                <h1 style="color: white;"> Alarms {% if is_admin %} <a class="btn  btn-light float-end" href="{% url 'pre_add_alarm' %}"
+                        role="button"><i class="fa-solid fa-plus"></i></a> {% endif %} </h1>
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <!-- <th scope="col"><input type="checkbox"></th> -->
+                            <th scope="col">ID</th>
+                            <th scope="col">Device</th>
+                            <th scope="col">Measure</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Min</th>
+                            <th scope="col">Max</th>
+                            <th scope="col">Activation</th>
+                            <th scope="col">Status</th>
+                            <!-- <th scope="col">Email</th> -->
+                            <th scope="col">Triggered</th>
+                            {% if is_admin %}
+                            <th scope="col">#</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    {% if alarms %}
+                    {% for alarm in alarms %}
+                    <tbody class="table-group-divider">
+                        <tr>
+                            <!-- <th scope="row"><input type="checkbox"></th> -->
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ alarm.alarm_device }}</td>
+                            <td>{{ alarm.alarm_measure }}</td>
+                            <td>{{ alarm.alarm_description }}</td>
+                            <td>{{ alarm.alarm_min }}</td>
+                            <td>{{ alarm.alarm_max }}</td>
+                            <td>{{ alarm.alarm_activation }}</td>
+                            <td>{{ alarm.alarm_status }}</td>
+                            <!-- <td>{{ alarm.alarm_emails }}</td> -->
+                            <td>{{ alarm.alarm_trigger }}
+                                {% if alarm.alarm_trigger == 'Yes' %}
+                                <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#multiCollapseExample{{alarm.id}}" aria-expanded="false"
+                                    aria-controls=""><i
+                                        class="fa-solid fa-arrow-down"></i></button>
+                            </td>
+
+                            {% endif %}
+
+                            {% if is_admin %}
+                            <td>
+                                <a class="btn btn-secondary" href='{% url "reset_alarm" alarm.id %}' style="margin-right: 10px;"><i class="fa-solid fa-arrows-spin"></i></a>
+                                <a class="btn btn-dark" href='{% url "update_alarm" alarm.id %}' style="margin-right: 10px;"><i class="fa-solid fa-pen-to-square"></i></a>
+                                <a class="btn btn-danger" href='{% url "delete_alarm" alarm.id %}'><i class="fa-solid fa-trash"></i></a>    
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% if alarm.alarm_trigger == 'Yes' %}
+
+                        <tr>
+                            <td colspan="13">
+                                <div class="collapse multi-collapse" id="multiCollapseExample{{alarm.id}}">
+                                    {% for trigger in triggered_alarms %}
+                                    {% if trigger.trigger_alarm_id == alarm.id %}
+                                    <div class="card card-body">
+                                        {{ trigger.timestamp| date:"Y M d g:i:s "}} <span>Data: {{trigger.trigger_data}}</span>
+                                        
+                                    </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td></td></tr>
+                        {% endif %}
+                    </tbody>
+                    {% endfor %}
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

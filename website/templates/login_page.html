@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!-- 
+<style>
+    #login_background{
+        background: url("{% static 'images/logo_4.png' %}") 50% 0%;
+        background-repeat: no-repeat;
+
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        opacity: 0.5;
+    } -->
+
+
+</style>
+
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
+{% endif %}
+
+<div id="login_background"></div>
+<!-- <div class="row"> -->
+    <div class="col-6 offset-3">
+        <section style="padding-top: 20vh;">
+            <div class="container-fluid h-custom">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-md-9 col-lg-6 col-xl-5">
+                    <img src="{% static 'images/logo3.png' %}" class="img-fluid" alt="Sample image">
+                </div>
+            <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1" style="margin-left: 0rem;">
+                <form method="post" action="{% url 'login_page' %}">
+                    {% csrf_token %}
+
+                    <!-- Email input -->
+                    <div class="form-outline mb-4">
+                        <input type="text" id="" class="form-control form-control-lg" placeholder="Enter Username"
+                            name="username" required>
+                        <label class="form-label" for="">Username</label>
+                    </div>
+
+                    <!-- Password input -->
+                    <div class="form-outline mb-3">
+                        <input type="password" id="" class="form-control form-control-lg" placeholder="Enter password"
+                            name="password" required>
+                        <label class="form-label" for="">Password</label>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <!-- Checkbox -->
+                        <div class="form-check mb-0">
+                            <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3" />
+                            <label class="form-check-label" for="form2Example3"> Remember me </label>
+                        </div>
+                        <!-- <a href="#!" class="text-body">Forgot password?</a> -->
+                    </div>
+
+                    <div class="text-center text-lg-start mt-4 pt-2">
+                        <button type="submit" class="btn btn-primary btn-lg"
+                            style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
+                        <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="{% url 'register' %}"
+                                class="link-danger">Register</a></p>
+                    </div>
+                </form>
+            </div>
+            <!-- </div> -->
+            <!-- </div> -->
+        </section>
+    </div>
+<!-- </div> -->
+
+
+
+{% endblock %}

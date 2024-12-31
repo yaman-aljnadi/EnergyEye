@@ -1,0 +1,820 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+{% block content %}
+
+<style>
+    .spinner {
+        display: none; /* Hidden by default */
+        width: 50px;
+        height: 50px;
+        border: 5px solid rgba(0, 0, 0, 0.1);
+        border-top: 5px solid #3498db;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1000; /* Ensure it's on top of other elements */
+    }
+  
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+  </style>
+
+<script>
+    $('select').selectpicker();
+</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
+
+<!-- <select class="selectpicker" data-width="40%" multiple data-live-search="true" id="empid">
+  {% if unique_registers_5 %}
+  {% for head in unique_registers_5 %}
+  <option>{{ head }}</option>
+  {% endfor %}
+  {% endif %}
+</select> -->
+
+
+<div class="spinner" id="loadingSpinner"></div>
+<br>
+
+<div class="row">
+    {% if five_secounds %}
+    <div class="col-11">
+        <h3>5 Seconds Interval Table</h3>
+        <div class="table-responsive" style="max-height: 20rem; margin-bottom: 1rem;">
+
+            <br>
+
+            <select class="selectpicker" data-width="100%" multiple data-live-search="true" id="empid_5_sec">
+                {% if unique_registers_5 %}
+                {% for head in unique_registers_5 %}
+                <option>{{ head }}</option>
+                {% endfor %}
+                {% endif %}
+            </select>
+
+            <br>
+
+
+            <table class="table table-sm table-bordered " id="CSV_Export_5_sec">
+                <br>
+                <thead id="main-table" itemId="main_5_sec">
+
+                    {% if unique_registers_5 %}
+                    <tr>
+                        {% for head in unique_registers_5 %}
+                        <th scope="col" class="5_sec_{{forloop.counter0}}" id="{{ head }}">{{ head }}</th>
+                        {% endfor %}
+                    </tr>
+                    {% endif %}
+                </thead>
+
+
+                <tbody id="data_rows_5_sec">
+                    {% for data in five_secounds %}
+                    {% if forloop.counter0|divisibleby:length_5 %}
+
+                    <!-- This is a bit weird, but actually this is the point start of the loop don't belive me that is up to you,and btw the answer you seek can be found when you inspect the webpage  -->
+                    <tr>
+                        <td class="">{{ data.timestamp| date:"Y M d g:i a" }}</td>
+                        <td class="">{{ data.value }} ({{ data.parameter_name }})</td>
+                        {% else %}
+                        <td class="">{{ data.value }} ({{ data.parameter_name }})</td>
+                        {% endif %}
+                        {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <button type="button" class="btn btn-dark" onclick="tableToCSV('CSV_Export_5_sec')"> Export CSV </button>
+    </div>
+    {% endif %}
+
+    {% if fifteen_secounds %}
+    <div class="col-11">
+        <h3>15 Seconds Interval Table</h3>
+
+        <div class="table-responsive" style="max-height: 20rem; margin-bottom: 1rem;">
+            <br>
+
+            <select class="selectpicker 15_sec" data-width="100%" multiple data-live-search="true" id="empid_15_sec">
+                {% if unique_registers_15 %}
+                {% for head in unique_registers_15 %}
+                <option>{{ head }}</option>
+                {% endfor %}
+                {% endif %}
+            </select>
+
+            <br>
+
+            <table class="table table-sm table-bordered" id="CSV_Export_15_sec">
+
+                <br>
+                <thead id="main-table" itemId="main_15_sec">
+
+                    {% if unique_registers_15 %}
+                    <tr>
+                        {% for head in unique_registers_15 %}
+                        <th scope="col" class="15_sec_{{forloop.counter0}}" id="{{ head }}">{{ head }}</th>
+                        {% endfor %}
+                    </tr>
+                    {% endif %}
+                </thead>
+
+
+                <tbody id="data_rows_15_sec">
+                    {% for data in fifteen_secounds %}
+                    {% if forloop.counter0|divisibleby:length_15 %}
+
+                    <!-- This is a bit weird, but actually this is the point start of the loop don't belive me that is up to you,and btw the answer you seek can be found when you inspect the webpage  -->
+                    </tr>
+                    <tr>
+                        <td>{{ data.timestamp| date:"Y M d g:i a" }}</td>
+                        <td>{{ data.value }} ({{ data.parameter_name }})</td>
+                        {% else %}
+                        <td>{{ data.value }} ({{ data.parameter_name }})</td>
+                        {% endif %}
+                        {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <button type="button" class="btn btn-dark" onclick="tableToCSV('CSV_Export_15_sec')"> Export CSV </button>
+    </div>
+    {% endif %}
+
+
+    {% if thirty_secounds %}
+    <div class="col-11">
+        <h3>30 Seconds Interval Table</h3>
+
+        <div class="table-responsive" style="max-height: 20rem; margin-bottom: 1rem;">
+            <br>
+
+            <select class="selectpicker 30_sec" data-width="100%" multiple data-live-search="true" id="empid_30_sec">
+                {% if unique_registers_30 %}
+                {% for head in unique_registers_30 %}
+                <option>{{ head }}</option>
+                {% endfor %}
+                {% endif %}
+            </select>
+
+            <br>
+
+            <table class="table table-sm table-bordered" id="CSV_Export_30_sec">
+
+                <br>
+                <thead id="main-table" itemId="main_30_sec">
+
+                    {% if unique_registers_30 %}
+                    <tr>
+                        {% for head in unique_registers_30 %}
+                        <th scope="col" class="30_sec_{{forloop.counter0}}" id="{{ head }}">{{ head }}</th>
+                        {% endfor %}
+                    </tr>
+                    {% endif %}
+                </thead>
+
+
+                <tbody id="data_rows_30_sec">
+                    {% for data in thirty_secounds %}
+                    {% if forloop.counter0|divisibleby:length_30 %}
+
+                    <!-- This is a bit weird, but actually this is the point start of the loop don't belive me that is up to you,and btw the answer you seek can be found when you inspect the webpage  -->
+                    </tr>
+                    <tr>
+                        <td>{{ data.timestamp| date:"Y M d g:i a" }}</td>
+                        <td>{{ data.value }} ({{ data.parameter_name }})</td>
+                        {% else %}
+                        <td>{{ data.value }} ({{ data.parameter_name }})</td>
+                        {% endif %}
+                        {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <button type="button" class="btn btn-dark" onclick="tableToCSV('CSV_Export_30_sec')"> Export CSV </button>
+    </div>
+
+    {% endif %}
+
+
+    {% if sixty_secounds %}
+    <div class="col-11">
+        <h3>60 Seconds Interval Table</h3>
+        <div class="table-responsive" style="max-height: 20rem; margin-bottom: 1rem;">
+            <br>
+
+            <select class="selectpicker 30_sec" data-width="100%" multiple data-live-search="true" id="empid_60_sec">
+                {% if unique_registers_60 %}
+                {% for head in unique_registers_60 %}
+                <option>{{ head }}</option>
+                {% endfor %}
+                {% endif %}
+            </select>
+
+            <br>
+
+            <table class="table table-sm table-bordered" id="CSV_Export_60_sec">
+                <br>
+
+                <thead id="main-table" itemId="main_60_sec">
+
+                    {% if unique_registers_60 %}
+                    <tr>
+                        {% for head in unique_registers_60 %}
+                        <th scope="col" class="60_sec_{{forloop.counter0}}" id="{{ head }}">{{ head }}</th>
+                        {% endfor %}
+                    </tr>
+                    {% endif %}
+                </thead>
+
+
+                <tbody id="data_rows_60_sec">
+                    {% for data in sixty_secounds %}
+                    {% if forloop.counter0|divisibleby:length_60 %}
+
+                    <!-- This is a bit weird, but actually this is the point start of the loop don't belive me that is up to you,and btw the answer you seek can be found when you inspect the webpage  -->
+                    </tr>
+                    <tr>
+                        <td>{{ data.timestamp| date:"Y M d g:i a" }}</td>
+                        <td>{{ data.value }} ({{ data.parameter_name }})</td>
+                        {% else %}
+                        <td>{{ data.value }} ({{ data.parameter_name }})</td>
+                        {% endif %}
+                        {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <button type="button" class="btn btn-dark" onclick="tableToCSV('CSV_Export_60_sec')"> Export CSV </button>
+
+    </div>
+    {% endif %}
+
+
+
+
+    {% if five_minutes %}
+    <div class="col-11">
+        <h3>5 minutes Interval Table</h3>
+
+        <div class="table-responsive" style="max-height: 20rem; margin-bottom: 1rem;">
+            <br>
+
+            <select class="selectpicker 30_sec" data-width="100%" multiple data-live-search="true" id="empid_5_min">
+                {% if unique_registers_5_min %}
+                {% for head in unique_registers_5_min %}
+                <option>{{ head }}</option>
+                {% endfor %}
+                {% endif %}
+            </select>
+
+            <br>
+
+            <table class="table table-sm table-bordered" id="CSV_Export_5_min">
+
+                <br>
+                <thead id="main-table" itemId="main_5_min">
+
+                    {% if unique_registers_5_min %}
+                    <tr>
+                        {% for head in unique_registers_5_min %}
+                        <th scope="col" class="5_min_{{forloop.counter0}}" id="{{ head }}">{{ head }}</th>
+                        {% endfor %}
+                    </tr>
+                    {% endif %}
+                </thead>
+
+
+                <tbody id="data_rows_5_min">
+                    {% for data in five_minutes %}
+                    {% if forloop.counter0|divisibleby:length_5_min %}
+
+                    <!-- This is a bit weird, but actually this is the point start of the loop don't belive me that is up to you,and btw the answer you seek can be found when you inspect the webpage  -->
+                    </tr>
+                    <tr>
+                        <td>{{ data.timestamp| date:"Y M d g:i a" }}</td>
+                        <td>{{ data.value }} ({{ data.parameter_name }})</td>
+                        {% else %}
+                        <td>{{ data.value }} ({{ data.parameter_name }})</td>
+                        {% endif %}
+                        {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <button type="button" class="btn btn-dark" onclick="tableToCSV('CSV_Export_5_min')"> Export CSV </button>
+
+    </div>
+    {% endif %}
+
+
+
+
+    {% if fifteen_minutes %}
+    <div class="col-11">
+        <h3>15 minutes Interval Table</h3>
+
+        <div class="table-responsive" style="max-height: 20rem; margin-bottom: 1rem;">
+            <br>
+
+            <select class="selectpicker 30_sec" data-width="100%" multiple data-live-search="true" id="empid_15_min">
+                {% if unique_registers_15_min %}
+                {% for head in unique_registers_15_min %}
+                <option>{{ head }}</option>
+                {% endfor %}
+                {% endif %}
+            </select>
+
+            <br>
+
+            <table class="table table-sm table-bordered" id="CSV_Export_15_min">
+
+                <br>
+                <thead id="main-table" itemId="main_15_min">
+
+                    {% if unique_registers_15_min %}
+                    <tr>
+                        {% for head in unique_registers_15_min %}
+                        <th scope="col" class="15_min_{{forloop.counter0}}" id="{{ head }}">{{ head }}</th>
+                        {% endfor %}
+                    </tr>
+                    {% endif %}
+                </thead>
+
+
+                <tbody id="data_rows_15_min">
+                    {% for data in fifteen_minutes %}
+                    {% if forloop.counter0|divisibleby:length_15_min %}
+
+                    <!-- This is a bit weird, but actually this is the point start of the loop don't belive me that is up to you,and btw the answer you seek can be found when you inspect the webpage  -->
+                    </tr>
+                    <tr>
+                        <td>{{ data.timestamp| date:"Y M d g:i a" }}</td>
+                        <td>{{ data.value }} ({{ data.parameter_name }})</td>
+                        {% else %}
+                        <td>{{ data.value }} ({{ data.parameter_name }})</td>
+                        {% endif %}
+                        {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <button type="button" class="btn btn-dark" onclick="tableToCSV('CSV_Export_15_min')"> Export CSV </button>
+
+    </div>
+    {% endif %}
+
+
+
+
+    {% if thirty_minutes %}
+    <div class="col-11">
+        <h3>30 minutes Interval Table</h3>
+
+        <div class="table-responsive" style="max-height: 20rem; margin-bottom: 1rem;">
+
+            <br>
+
+            <select class="selectpicker 30_sec" data-width="100%" multiple data-live-search="true" id="empid_30_min">
+                {% if unique_registers_30_min %}
+                {% for head in unique_registers_30_min %}
+                <option>{{ head }}</option>
+                {% endfor %}
+                {% endif %}
+            </select>
+
+            <br>
+
+            <table class="table table-sm table-bordered" id="CSV_Export_30_min">
+
+                <br>
+                <thead id="main-table" itemId="main_30_min">
+
+                    {% if unique_registers_30_min %}
+                    <tr>
+                        {% for head in unique_registers_30_min %}
+                        <th scope="col" class="30_min_{{forloop.counter0}}" id="{{ head }}">{{ head }}</th>
+                        {% endfor %}
+                    </tr>
+                    {% endif %}
+                </thead>
+
+
+                <tbody id="data_rows_30_min">
+                    {% for data in thirty_minutes %}
+                    {% if forloop.counter0|divisibleby:length_30_min %}
+
+                    <!-- This is a bit weird, but actually this is the point start of the loop don't belive me that is up to you,and btw the answer you seek can be found when you inspect the webpage  -->
+                    </tr>
+                    <tr>
+                        <td>{{ data.timestamp| date:"Y M d g:i a" }}</td>
+                        <td>{{ data.value }} ({{ data.parameter_name }})</td>
+                        {% else %}
+                        <td>{{ data.value }} ({{ data.parameter_name }})</td>
+                        {% endif %}
+                        {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <button type="button" class="btn btn-dark" onclick="tableToCSV('CSV_Export_30_min')"> Export CSV </button>
+
+    </div>
+    {% endif %}
+
+
+
+
+    {% if sixty_minutes %}
+    <div class="col-11">
+        <h3>60 minutes Interval Table</h3>
+
+        <div class="table-responsive" style="max-height: 20rem; margin-bottom: 1rem;">
+
+            <br>
+
+            <select class="selectpicker 30_sec" data-width="100%" multiple data-live-search="true" id="empid_60_min">
+                {% if unique_registers_60_min %}
+                {% for head in unique_registers_60_min %}
+                <option>{{ head }}</option>
+                {% endfor %}
+                {% endif %}
+            </select>
+
+            <br>
+
+            <table class="table table-sm table-bordered" id="CSV_Export_60_min">
+
+                <br>
+                <thead id="main-table" itemId="main_60_min">
+
+                    {% if unique_registers_60_min %}
+                    <tr>
+                        {% for head in unique_registers_60_min %}
+                        <th scope="col" class="60_min_{{forloop.counter0}}" id="{{ head }}">{{ head }}</th>
+                        {% endfor %}
+                    </tr>
+                    {% endif %}
+                </thead>
+
+
+                <tbody id="data_rows_60_min">
+                    {% for data in sixty_minutes %}
+                    {% if forloop.counter0|divisibleby:length_60_min %}
+
+                    <!-- This is a bit weird, but actually this is the point start of the loop don't belive me that is up to you,and btw the answer you seek can be found when you inspect the webpage  -->
+                    </tr>
+                    <tr>
+                        <td>{{ data.timestamp| date:"Y M d g:i a" }}</td>
+                        <td>{{ data.value }} ({{ data.parameter_name }})</td>
+                        {% else %}
+                        <td>{{ data.value }} ({{ data.parameter_name }})</td>
+                        {% endif %}
+                        {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <button type="button" class="btn btn-dark" onclick="tableToCSV('CSV_Export_60_min')"> Export CSV </button>
+
+    </div>
+    {% endif %}
+
+
+
+
+    {% if six_hours %}
+    <div class="col-11">
+        <h3>6 Hours Interval Table</h3>
+
+        <div class="table-responsive" style="max-height: 20rem; margin-bottom: 1rem;">
+
+            <br>
+
+            <select class="selectpicker 30_sec" data-width="100%" multiple data-live-search="true" id="empid_6_hours">
+                {% if unique_registers_6_hours %}
+                {% for head in unique_registers_6_hours %}
+                <option>{{ head }}</option>
+                {% endfor %}
+                {% endif %}
+            </select>
+
+            <br>
+
+            <table class="table table-sm table-bordered" id="CSV_Export_6_hours">
+
+                <br>
+                <thead id="main-table" itemId="main_6_hours">
+
+                    {% if unique_registers_6_hours %}
+                    <tr>
+                        {% for head in unique_registers_6_hours %}
+                        <th scope="col" class="6_hours_{{forloop.counter0}}" id="{{ head }}">{{ head }}</th>
+                        {% endfor %}
+                    </tr>
+                    {% endif %}
+                </thead>
+
+
+                <tbody id="data_rows_6_hours">
+                    {% for data in six_hours %}
+                    {% if forloop.counter0|divisibleby:length_6_hours %}
+
+                    <!-- This is a bit weird, but actually this is the point start of the loop don't belive me that is up to you,and btw the answer you seek can be found when you inspect the webpage  -->
+                    </tr>
+                    <tr>
+                        <td>{{ data.timestamp| date:"Y M d g:i a" }}</td>
+                        <td>{{ data.value }} ({{ data.parameter_name }})</td>
+                        {% else %}
+                        <td>{{ data.value }} ({{ data.parameter_name }})</td>
+                        {% endif %}
+                        {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <button type="button" class="btn btn-dark" onclick="tableToCSV('CSV_Export_6_hours')"> Export CSV </button>
+
+    </div>
+    {% endif %}
+
+
+
+
+    {% if twealv_hours %}
+    <div class="col-11">
+        <h3>12 Hours Interval Table</h3>
+        <div class="table-responsive" style="max-height: 20rem; margin-bottom: 1rem;">
+
+            <br>
+
+            <select class="selectpicker 30_sec" data-width="100%" multiple data-live-search="true" id="empid_12_hours">
+                {% if unique_registers_12_hours %}
+                {% for head in unique_registers_12_hours %}
+                <option>{{ head }}</option>
+                {% endfor %}
+                {% endif %}
+            </select>
+
+            <br>
+
+            <table class="table table-sm table-bordered" id="CSV_Export_12_hours">
+
+                <br>
+                <thead id="main-table" itemId="main_12_hours">
+
+                    {% if unique_registers_12_hours %}
+                    <tr>
+                        {% for head in unique_registers_12_hours %}
+                        <th scope="col" class="12_hours_{{forloop.counter0}}" id="{{ head }}">{{ head }}</th>
+                        {% endfor %}
+                    </tr>
+                    {% endif %}
+                </thead>
+
+
+                <tbody id="data_rows_12_hours">
+                    {% for data in twealv_hours %}
+                    {% if forloop.counter0|divisibleby:length_12_hours %}
+
+                    <!-- This is a bit weird, but actually this is the point start of the loop don't belive me that is up to you,and btw the answer you seek can be found when you inspect the webpage  -->
+                    </tr>
+                    <tr>
+                        <td>{{ data.timestamp| date:"Y M d g:i a" }}</td>
+                        <td>{{ data.value }} ({{ data.parameter_name }})</td>
+                        {% else %}
+                        <td>{{ data.value }} ({{ data.parameter_name }})</td>
+                        {% endif %}
+                        {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <button type="button" class="btn btn-dark" onclick="tableToCSV('CSV_Export_12_hours')"> Export CSV </button>
+
+    </div>
+    {% endif %}
+
+
+
+    {% if twinty_four_hours %}
+    <div class="col-11">
+        <h3>24 Hours Interval Table</h3>
+        <div class="table-responsive" style="max-height: 20rem; margin-bottom: 1rem;">
+
+            <br>
+
+            <select class="selectpicker 30_sec" data-width="100%" multiple data-live-search="true" id="empid_24_hours">
+                {% if unique_registers_24_hours %}
+                {% for head in unique_registers_24_hours %}
+                <option>{{ head }}</option>
+                {% endfor %}
+                {% endif %}
+            </select>
+
+            <br>
+
+            <table class="table table-sm table-bordered" id="CSV_Export_24_hours">
+
+                <br>
+                <thead id="main-table" itemId="main_24_hours">
+
+                    {% if unique_registers_24_hours %}
+                    <tr>
+                        {% for head in unique_registers_24_hours %}
+                        <th scope="col" class="24_hours_{{forloop.counter0}}" id="{{ head }}">{{ head }}</th>
+                        {% endfor %}
+                    </tr>
+                    {% endif %}
+                </thead>
+
+
+                <tbody id="data_rows_24_hours">
+                    {% for data in twinty_four_hours %}
+                    {% if forloop.counter0|divisibleby:length_24_hours %}
+
+                    <!-- This is a bit weird, but actually this is the point start of the loop don't belive me that is up to you,and btw the answer you seek can be found when you inspect the webpage  -->
+                    </tr>
+                    <tr>
+                        <td>{{ data.timestamp| date:"Y M d g:i a" }}</td>
+                        <td>{{ data.value }} ({{ data.parameter_name }})</td>
+                        {% else %}
+                        <td>{{ data.value }} ({{ data.parameter_name }})</td>
+                        {% endif %}
+                        {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <button type="button" class="btn btn-dark" onclick="tableToCSV('CSV_Export_24_hours')"> Export CSV </button>
+    </div>
+    {% endif %}
+</div>
+
+
+
+<br>
+
+
+
+
+<script type="text/javascript">
+
+    table_intervals = ["5_sec", "15_sec", "30_sec", "60_sec", "5_min", "15_min", "30_min", "60_min", "6_hours", "12_hours", "24_hours"]
+
+    $(document).ready(function () {
+        $('#main-table th').each(function (index) {
+            var className = $(this).attr('id');
+
+            table_intervals.forEach(element => {
+                $('#data_rows_' + element + ' td:nth-child(' + (index + 1) + ')').addClass(String(element + "_" + index));
+            });
+        });
+    });
+
+
+    $(document).ready(function () {
+        // Event listener for change in Select picker of 5 seconds table
+        $('#empid_5_sec').change(function () {
+            handleSelectChange('5_sec');
+        });
+
+        $('#empid_15_sec').change(function () {
+            handleSelectChange('15_sec');
+        });
+
+        $('#empid_30_sec').change(function () {
+            handleSelectChange('30_sec');
+        });
+
+        $('#empid_60_sec').change(function () {
+            handleSelectChange('60_sec');
+        });
+
+        $('#empid_5_min').change(function () {
+            handleSelectChange('5_min');
+        });
+
+        $('#empid_15_min').change(function () {
+            handleSelectChange('15_min');
+        });
+
+        $('#empid_30_min').change(function () {
+            handleSelectChange('30_min');
+        });
+
+        $('#empid_60_min').change(function () {
+            handleSelectChange('60_min');
+        });
+
+        $('#empid_6_hours').change(function () {
+            handleSelectChange('6_hours');
+        });
+
+        $('#empid_12_hours').change(function () {
+            handleSelectChange('12_hours');
+        });
+
+        $('#empid_24_hours').change(function () {
+            handleSelectChange('24_hours');
+        });
+    });
+
+    function handleSelectChange(interval) {
+        var selectedItem = $('#empid_' + interval).val();
+        console.log("Selected Items: " + selectedItem)
+        var items_list = [];
+        // Get the number of columns in the main table
+        var table = document.querySelector('[itemId="main_' + interval + '"]');
+        // Select all th elements within the table
+        var thElements = table.querySelectorAll('th');
+
+        // Get the number of th elements
+        var main_table_len = thElements.length;
+
+        console.log(thElements);
+        console.log(main_table_len);
+
+        // Build a list of column ids for the main table
+        for (var i = 0; i < main_table_len; i++) {
+            items_list.push(thElements[i].id);
+        }
+        console.log("items list: " + items_list)
+        // Show or hide columns based on selected items
+        if (selectedItem != null) {
+            for (var i = 0; i < items_list.length; i++) {
+                $('.' + interval + '_' + i).hide();
+                console.log('.' + interval + '_' + i)
+            }
+        } else {
+            for (var i = 0; i < items_list.length; i++) {
+                $('.' + interval + '_' + i).show();
+            }
+        }
+
+        console.log(selectedItem)
+        // Show selected columns
+        for (var i = 0; i < items_list.length; i++) {
+            for (var j = 0; j < selectedItem.length; j++) {
+                if (selectedItem[j] == items_list[i]) {
+                    $('.' + interval + '_' + i).show();
+                }
+            }
+        }
+    }
+
+
+
+
+
+    function tableToCSV(tableId) {
+        // Send an AJAX request to fetch data for the specified table from the server
+        $('#loadingSpinner').show();
+        $.ajax({
+            url: window.location.href + '?format=csv&table_id=' + tableId,
+            type: 'GET',
+            success: function (response) {
+                // response contains the dataset for the specified table in CSV format
+                // Call downloadCSVFile function to download the CSV file
+                $('#loadingSpinner').hide();
+                downloadCSVFile(response, tableId + "_dataset");
+            },
+            error: function (xhr, status, error) {
+                $('#loadingSpinner').hide();
+                console.error("Error fetching data:", error);
+            }
+        });
+    }
+
+
+    function downloadCSVFile(csv_data, tableName) {
+
+        // Create CSV file object and feed
+        // our csv_data into it
+        CSVFile = new Blob([csv_data], {
+            type: "text/csv"
+        });
+
+        // Create to temporary link to initiate
+        // download process
+        let temp_link = document.createElement('a');
+
+        // Download csv file
+        temp_link.download = "{{device_name}}_" + tableName + ".csv";
+        let url = window.URL.createObjectURL(CSVFile);
+        temp_link.href = url;
+
+        // This link should not be displayed
+        temp_link.style.display = "none";
+        document.body.appendChild(temp_link);
+
+        // Automatically click the link to
+        // trigger download
+        temp_link.click();
+        document.body.removeChild(temp_link);
+    }
+
+
+</script>
+
+{% endblock %}

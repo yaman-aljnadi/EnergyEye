@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+<div class="col-md-6 offset-md-3">
+    <h1 style="text-align: center;">Update Alarm</h1>
+    <h3 style="text-align: center;">Alarm Device : {{ alarm_record.alarm_device }}</h3>
+    <br/>
+
+    <form method="POST" class="row g-4">
+        {% csrf_token %}
+        <div class="col-md-6">
+            <input type="text" name="alarm_device" value="{{ alarm_record.alarm_device }}" class="form-control" required="" id="id_alarm_device" readonly>
+        </div>
+        <div class="col-md-6">
+            {{ form.alarm_measure }}
+        </div>
+        <div class="col-md-12">
+            {{ form.alarm_description }}
+        </div>
+        <div class="col-md-6">
+            {{ form.alarm_min }}
+        </div>
+        <div class="col-md-6">
+            {{ form.alarm_max }}
+        </div>
+        <div class="col-md-6">
+            {{ form.alarm_activation }}
+        </div>
+        <div class="col-md-6">
+            {{ form.alarm_status }}
+        </div>
+        <div class="col-md-6">
+            {{ form.alarm_emails }}
+        </div>
+        </br>
+        <button type="submit" class="btn btn-primary">Update Alarm</button>
+    </form>
+</div>
+
+{% endblock %}

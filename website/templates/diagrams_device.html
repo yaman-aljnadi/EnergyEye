@@ -1,0 +1,1102 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+
+<script>
+    $('select').selectpicker();
+</script>
+<script src="{% static 'Echarts5-5-0\echarts.min.js' %}"></script>
+<script src="{% static 'Jquary\jquery-3.6.0.min.js' %}"></script>
+
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
+<h1> Device : {{ device.device_name }}</h1>
+<br>
+<style>
+    #main {
+        width: 100%;
+        height: 30vh;
+
+    }
+
+    #main2 {
+        width: 100%;
+        height: 30vh;
+
+    }
+
+    #main3 {
+        width: 100%;
+        height: 30vh;
+
+    }
+
+    #main4 {
+        width: 100%;
+        height: 30vh;
+
+    }
+
+    #main5 {
+        width: 100%;
+        height: 30vh;
+
+    }
+
+    #main6 {
+        width: 100%;
+        height: 30vh;
+
+    }
+
+    #Graph_1 {
+        width: 100%;
+        height: 50vh;
+        background-color: #e0f1f1;
+    }
+
+    #card_footer_1 {
+        border-color: rgba(255, 255, 255, 0.3);
+        border-width: 0.2vw;
+        /* background-color: rgba(255, 255, 255, ); */
+    }
+
+    #footer_elements {
+        background-color: rgba(255, 255, 255, 0.8);
+        margin-bottom: 1vw;
+    }
+
+    #myForm_1 {
+        display: none;
+        /* Hidden by default */
+        position: fixed;
+        /* Stay in place */
+        z-index: 1;
+        /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%;
+        /* Full width */
+        height: 100%;
+        /* Full height */
+        overflow: auto;
+        /* Enable scroll if needed */
+        background-color: rgb(0, 0, 0);
+        /* Fallback color */
+        background-color: rgba(0, 0, 0, 0.4);
+        /* Black w/ opacity */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #myForm_2 {
+        display: none;
+        /* Hidden by default */
+        position: fixed;
+        /* Stay in place */
+        z-index: 1;
+        /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%;
+        /* Full width */
+        height: 100%;
+        /* Full height */
+        overflow: auto;
+        /* Enable scroll if needed */
+        background-color: rgb(0, 0, 0);
+        /* Fallback color */
+        background-color: rgba(0, 0, 0, 0.4);
+        /* Black w/ opacity */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #myForm_3 {
+        display: none;
+        /* Hidden by default */
+        position: fixed;
+        /* Stay in place */
+        z-index: 1;
+        /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%;
+        /* Full width */
+        height: 100%;
+        /* Full height */
+        overflow: auto;
+        /* Enable scroll if needed */
+        background-color: rgb(0, 0, 0);
+        /* Fallback color */
+        background-color: rgba(0, 0, 0, 0.4);
+        /* Black w/ opacity */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #myForm_4 {
+        display: none;
+        /* Hidden by default */
+        position: fixed;
+        /* Stay in place */
+        z-index: 1;
+        /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%;
+        /* Full width */
+        height: 100%;
+        /* Full height */
+        overflow: auto;
+        /* Enable scroll if needed */
+        background-color: rgb(0, 0, 0);
+        /* Fallback color */
+        background-color: rgba(0, 0, 0, 0.4);
+        /* Black w/ opacity */
+        margin-top: 2vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .form-container {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 60%;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        animation-name: animatetop;
+        animation-duration: 0.4s
+    }
+
+    @keyframes animatetop {
+        from {
+            top: -300px;
+            opacity: 0
+        }
+
+        to {
+            top: 0;
+            opacity: 1
+        }
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    #form-style_1 {
+        width: 100%;
+        margin-right: 1vw;
+        border-left: 1vw;
+        border-color: black;
+        border-width: 10px;
+    }
+
+    #form-style_2 {
+        width: 100%;
+        margin-left: 1vw;
+    }
+
+    #form-style_3 {
+        width: 100%;
+        margin-left: 1vw;
+    }
+
+    #form-style_4 {
+        width: 100%;
+        margin-left: 1vw;
+    }
+
+    #form-style_5 {
+        width: 100%;
+        margin-left: 1vw;
+    }
+
+    #form-style_6 {
+        width: 100%;
+        margin-left: 1vw;
+    }
+</style>
+
+
+<div class="row">
+    <div class="col-4">
+        <div class="card" style="background-color: #23272b;">
+
+
+            <div class="card-header d-flex justify-content-evenly" style="border-color: aliceblue;">
+                {% if is_admin %}
+                <button class="btn btn-dark position-absolute top-0 end-0" onclick="showForm_1()"><i
+                        class="fa-solid fa-pen"></i></button>
+                {% endif %}
+                <h4 style="color: white; margin-right: 5vw;" id="chart_1_title">None</h4>
+                <h4 style="color: white;" id="chart_2_title">None</h4>
+            </div>
+
+            <div class="card-body d-flex justify-content-evenly">
+                <div id="main"></div>
+                <div id="main2"></div>
+            </div>
+
+            <div class="card-footer d-flex justify-content-evenly" id="card_footer_1">
+
+                <div class="d-flex justify-content-evenly">
+
+                    <div style="width: 10vw; margin-right: 5vw;">
+                        <div class="p-3 text-primary-emphasis bg-emphasis-subtle border border-secondary-subtle rounded-3"
+                            id="footer_elements">
+                            <div class="d-flex justify-content-between">
+                                <span id="chart_1_2">None</span>
+                                <span id="chart_1_2_measure">0</span>
+                            </div>
+                        </div>
+                        <div class="p-3 text-primary-emphasis bg-emphasis-subtle border border-secondary-subtle rounded-3"
+                            id="footer_elements">
+                            <div class="d-flex justify-content-between">
+                                <span id="chart_1_3">None</span>
+                                <span id="chart_1_3_measure">0</span>
+                            </div>
+                        </div>
+                        <div class="p-3 text-primary-emphasis bg-emphasis-subtle border border-secondary-subtle rounded-3"
+                            id="footer_elements">
+                            <div class="d-flex justify-content-between">
+                                <span id="chart_1_4">None</span>
+                                <span id="chart_1_4_measure">0</span>
+                            </div>
+                        </div>
+                        <div class="p-3 text-primary-emphasis bg-emphasis-subtle border border-secondary-subtle rounded-3"
+                            id="footer_elements">
+                            <div class="d-flex justify-content-between">
+                                <span id="chart_1_5">None</span>
+                                <span id="chart_1_5_measure">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="width: 10vw;">
+                        <div class="p-3 text-primary-emphasis bg-emphasis-subtle border border-secondary-subtle rounded-3"
+                            id="footer_elements">
+                            <div class="d-flex justify-content-between">
+                                <span id="chart_2_2">None</span>
+                                <span id="chart_2_2_measure">0</span>
+                            </div>
+                        </div>
+
+                        <div class="p-3 text-primary-emphasis bg-emphasis-subtle border border-secondary-subtle rounded-3"
+                            id="footer_elements">
+                            <div class="d-flex justify-content-between">
+                                <span id="chart_2_3">None</span>
+                                <span id="chart_2_3_measure">0</span>
+                            </div>
+                        </div>
+                        <div class="p-3 text-primary-emphasis bg-emphasis-subtle border border-secondary-subtle rounded-3"
+                            id="footer_elements">
+                            <div class="d-flex justify-content-between">
+                                <span id="chart_2_4">None</span>
+                                <span id="chart_2_4_measure">0</span>
+                            </div>
+                        </div>
+
+                        <div class="p-3 text-primary-emphasis bg-emphasis-subtle border border-secondary-subtle rounded-3"
+                            id="footer_elements">
+                            <div class="d-flex justify-content-between">
+                                <span id="chart_2_5">None</span>
+                                <span id="chart_2_5_measure">0</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-4">
+        <div class="card" style="background-color: #23272b;">
+
+
+            <div class="card-header d-flex justify-content-evenly" style="border-color: aliceblue;">
+                {% if is_admin %}
+                <button class="btn btn-dark position-absolute top-0 end-0" onclick="showForm_2()"><i
+                        class="fa-solid fa-pen"></i></button>
+                {% endif %}
+                <h4 style="color: white; margin-right: 5vw;" id="chart_3_title">None</h4>
+                <h4 style="color: white;" id="chart_4_title">None</h4>
+            </div>
+
+            <div class="card-body d-flex justify-content-evenly">
+                <div id="main3"></div>
+                <div id="main4"></div>
+            </div>
+
+            <div class="card-footer d-flex justify-content-evenly" id="card_footer_1">
+
+                <div class="d-flex justify-content-evenly">
+
+                    <div style="width: 10vw; margin-right: 5vw;">
+                        <div class="p-3 text-primary-emphasis bg-emphasis-subtle border border-secondary-subtle rounded-3"
+                            id="footer_elements">
+                            <div class="d-flex justify-content-between">
+                                <span id="chart_3_2">None</span>
+                                <span id="chart_3_2_measure">0</span>
+                            </div>
+                        </div>
+                        <div class="p-3 text-primary-emphasis bg-emphasis-subtle border border-secondary-subtle rounded-3"
+                            id="footer_elements">
+                            <div class="d-flex justify-content-between">
+                                <span id="chart_3_3">None</span>
+                                <span id="chart_3_3_measure">0</span>
+                            </div>
+                        </div>
+                        <div class="p-3 text-primary-emphasis bg-emphasis-subtle border border-secondary-subtle rounded-3"
+                            id="footer_elements">
+                            <div class="d-flex justify-content-between">
+                                <span id="chart_3_4">None</span>
+                                <span id="chart_3_4_measure">0</span>
+                            </div>
+                        </div>
+                        <div class="p-3 text-primary-emphasis bg-emphasis-subtle border border-secondary-subtle rounded-3"
+                            id="footer_elements">
+                            <div class="d-flex justify-content-between">
+                                <span id="chart_3_5">None</span>
+                                <span id="chart_3_5_measure">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="width: 10vw;">
+                        <div class="p-3 text-primary-emphasis bg-emphasis-subtle border border-secondary-subtle rounded-3"
+                            id="footer_elements">
+                            <div class="d-flex justify-content-between">
+                                <span id="chart_4_2">None</span>
+                                <span id="chart_4_2_measure">0</span>
+                            </div>
+                        </div>
+
+                        <div class="p-3 text-primary-emphasis bg-emphasis-subtle border border-secondary-subtle rounded-3"
+                            id="footer_elements">
+                            <div class="d-flex justify-content-between">
+                                <span id="chart_4_3">None</span>
+                                <span id="chart_4_3_measure">0</span>
+                            </div>
+                        </div>
+                        <div class="p-3 text-primary-emphasis bg-emphasis-subtle border border-secondary-subtle rounded-3"
+                            id="footer_elements">
+                            <div class="d-flex justify-content-between">
+                                <span id="chart_4_4">None</span>
+                                <span id="chart_4_4_measure">0</span>
+                            </div>
+                        </div>
+
+                        <div class="p-3 text-primary-emphasis bg-emphasis-subtle border border-secondary-subtle rounded-3"
+                            id="footer_elements">
+                            <div class="d-flex justify-content-between">
+                                <span id="chart_4_5">None</span>
+                                <span id="chart_4_5_measure">0</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-4">
+        <div class="card" style="background-color: #23272b;">
+            <div class="card-header d-flex justify-content-evenly" style="border-color: aliceblue;">
+                {% if is_admin %}
+                <button class="btn btn-dark position-absolute top-0 end-0" onclick="showForm_3()"><i
+                        class="fa-solid fa-pen"></i></button>
+                {% endif %}
+                <h4 style="color: white; margin-right: 5vw;" id="chart_5_title">None</h4>
+                <h4 style="color: white;" id="chart_6_title">None</h4>
+            </div>
+
+            <div class="card-body d-flex justify-content-evenly">
+                <div id="main5"></div>
+                <div id="main6"></div>
+            </div>
+
+            <div class="card-footer d-flex justify-content-evenly" id="card_footer_1">
+
+                <div class="d-flex justify-content-evenly">
+
+                    <div style="width: 10vw; margin-right: 5vw;">
+                        <div class="p-3 text-primary-emphasis bg-emphasis-subtle border border-secondary-subtle rounded-3"
+                            id="footer_elements">
+                            <div class="d-flex justify-content-between">
+                                <span id="chart_5_2">None</span>
+                                <span id="chart_5_2_measure">0</span>
+                            </div>
+                        </div>
+                        <div class="p-3 text-primary-emphasis bg-emphasis-subtle border border-secondary-subtle rounded-3"
+                            id="footer_elements">
+                            <div class="d-flex justify-content-between">
+                                <span id="chart_5_3">None</span>
+                                <span id="chart_5_3_measure">0</span>
+                            </div>
+                        </div>
+                        <div class="p-3 text-primary-emphasis bg-emphasis-subtle border border-secondary-subtle rounded-3"
+                            id="footer_elements">
+                            <div class="d-flex justify-content-between">
+                                <span id="chart_5_4">None</span>
+                                <span id="chart_5_4_measure">0</span>
+                            </div>
+                        </div>
+                        <div class="p-3 text-primary-emphasis bg-emphasis-subtle border border-secondary-subtle rounded-3"
+                            id="footer_elements">
+                            <div class="d-flex justify-content-between">
+                                <span id="chart_5_5">None</span>
+                                <span id="chart_5_5_measure">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="width: 10vw;">
+                        <div class="p-3 text-primary-emphasis bg-emphasis-subtle border border-secondary-subtle rounded-3"
+                            id="footer_elements">
+                            <div class="d-flex justify-content-between">
+                                <span id="chart_6_2">None</span>
+                                <span id="chart_6_2_measure">0</span>
+                            </div>
+                        </div>
+
+                        <div class="p-3 text-primary-emphasis bg-emphasis-subtle border border-secondary-subtle rounded-3"
+                            id="footer_elements">
+                            <div class="d-flex justify-content-between">
+                                <span id="chart_6_3">None</span>
+                                <span id="chart_6_3_measure">0</span>
+                            </div>
+                        </div>
+                        <div class="p-3 text-primary-emphasis bg-emphasis-subtle border border-secondary-subtle rounded-3"
+                            id="footer_elements">
+                            <div class="d-flex justify-content-between">
+                                <span id="chart_6_4">None</span>
+                                <span id="chart_6_4_measure">0</span>
+                            </div>
+                        </div>
+
+                        <div class="p-3 text-primary-emphasis bg-emphasis-subtle border border-secondary-subtle rounded-3"
+                            id="footer_elements">
+                            <div class="d-flex justify-content-between">
+                                <span id="chart_6_5">None</span>
+                                <span id="chart_6_5_measure">0</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <br>
+        {% if is_admin %}
+        <button class="btn btn-dark top-0 end-0" onclick="showForm_4()"><i class="fa-solid fa-pen"></i></button>
+        {% endif %}
+        <div id="Graph_1" class="rounded"></div>
+    </div>
+</div>
+
+<form method="POST" action="">
+    <div id="myForm_1" style="display: none;">
+        <div class="form-container">
+            <span style="user-select: none;" class="close" onclick="hideForm('myForm_1')">&times;</span>
+
+            <div class="card-body d-flex justify-content-evenly">
+                <div id="form-style_1" class="border-end p-5">
+                    {% csrf_token %}
+                    <h1>Title</h1>
+                    <div>{{ form.chart_1_title }}</div>
+                    <br>
+                    <h3>Gauge Reading</h3>
+                    <div>{{ form.chart_1_1 }}</div>
+
+                    <div class="row">
+                        <div class="col-6 form-group">
+                            <label for="id_chart_1_min">Min:</label>
+                            {{ form.chart_1_min }}
+                            <small class="text-muted">Enter minimum value</small>
+                        </div>
+                        <div class="col-6 form-group">
+                            <label for="id_chart_1_max">Max:</label>
+                            {{ form.chart_1_max }} <small class="text-muted">Enter maximum value</small>
+                        </div>
+                    </div>
+                    <div>Threshold {{ form.chart_1_thresh_hold }}
+                        <small class="text-muted">Enter Threshold</small>
+                    </div>
+
+                    <br>
+                    <h3>Measure 1</h3>
+                    <div>{{ form.chart_1_2 }}</div>
+                    <h3>Measure 2</h3>
+                    <div>{{ form.chart_1_3 }}</div>
+                    <h3>Measure 3</h3>
+                    <div>{{ form.chart_1_4 }}</div>
+                    <h3>Measure 4</h3>
+                    <div>{{ form.chart_1_5 }}</div>
+
+                </div>
+
+                <div id="form-style_2" class="border-start p-5 ">
+                    <h1>Title</h1>
+                    <div>{{ form.chart_2_title }}</div>
+                    <br>
+                    <h3>Gauge Reading</h3>
+                    <div>{{ form.chart_2_1 }}</div>
+
+                    <div class="row">
+                        <div class="col-6 form-group">
+                            <label for="id_chart_1_min">Min:</label>
+                            {{ form.chart_2_min }}
+                            <small class="text-muted">Enter minimum value</small>
+                        </div>
+                        <div class="col-6 form-group">
+                            <label for="id_chart_1_max">Max:</label>
+                            {{ form.chart_2_max }} <small class="text-muted">Enter maximum value</small>
+                        </div>
+                    </div>
+                    <div>Threshold {{ form.chart_2_thresh_hold }}
+                        <small class="text-muted">Enter Threshold</small>
+                    </div>
+
+                    <br>
+                    <h3>Measure 1</h3>
+                    <div>{{ form.chart_2_2 }}</div>
+                    <h3>Measure 2</h3>
+                    <div>{{ form.chart_2_3 }}</div>
+                    <h3>Measure 3</h3>
+                    <div>{{ form.chart_2_4 }}</div>
+                    <h3>Measure 4</h3>
+                    <div>{{ form.chart_2_5 }}</div>
+
+                </div>
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary">Update</button>
+
+        </div>
+    </div>
+
+    <div id="myForm_2" style="display: none;">
+        <div class="form-container">
+            <span style="user-select: none;" class="close" onclick="hideForm('myForm_2')">&times;</span>
+
+            <div class="card-body d-flex justify-content-evenly">
+                <div id="form-style_3" class="border-end p-5">
+                    {% csrf_token %}
+                    <h1>Title</h1>
+                    <div>{{ form.chart_3_title }}</div>
+                    <br>
+                    <h3>Gauge Reading</h3>
+                    <div>{{ form.chart_3_1 }}</div>
+
+                    <div class="row">
+                        <div class="col-6 form-group">
+                            <label for="id_chart_1_min">Min:</label>
+                            {{ form.chart_3_min }}
+                            <small class="text-muted">Enter minimum value</small>
+                        </div>
+                        <div class="col-6 form-group">
+                            <label for="id_chart_1_max">Max:</label>
+                            {{ form.chart_3_max }} <small class="text-muted">Enter maximum value</small>
+                        </div>
+                    </div>
+                    <div>Threshold {{ form.chart_3_thresh_hold }}
+                        <small class="text-muted">Enter Threshold</small>
+                    </div>
+
+                    <br>
+                    <h3>Measure 1</h3>
+                    <div>{{ form.chart_3_2 }}</div>
+                    <h3>Measure 2</h3>
+                    <div>{{ form.chart_3_3 }}</div>
+                    <h3>Measure 3</h3>
+                    <div>{{ form.chart_3_4 }}</div>
+                    <h3>Measure 4</h3>
+                    <div>{{ form.chart_3_5 }}</div>
+
+                </div>
+
+                <div id="form-style_4" class="border-start p-5 ">
+                    <h1>Title</h1>
+                    <div>{{ form.chart_4_title }}</div>
+                    <br>
+                    <h3>Gauge Reading</h3>
+                    <div>{{ form.chart_4_1 }}</div>
+
+                    <div class="row">
+                        <div class="col-6 form-group">
+                            <label for="id_chart_1_min">Min:</label>
+                            {{ form.chart_4_min }}
+                            <small class="text-muted">Enter minimum value</small>
+                        </div>
+                        <div class="col-6 form-group">
+                            <label for="id_chart_1_max">Max:</label>
+                            {{ form.chart_4_max }} <small class="text-muted">Enter maximum value</small>
+                        </div>
+                    </div>
+                    <div>Threshold {{ form.chart_4_thresh_hold }}
+                        <small class="text-muted">Enter Threshold</small>
+                    </div>
+
+                    <br>
+                    <h3>Measure 1</h3>
+                    <div>{{ form.chart_4_2 }}</div>
+                    <h3>Measure 2</h3>
+                    <div>{{ form.chart_4_3 }}</div>
+                    <h3>Measure 3</h3>
+                    <div>{{ form.chart_4_4 }}</div>
+                    <h3>Measure 4</h3>
+                    <div>{{ form.chart_4_5 }}</div>
+
+                </div>
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary">Update</button>
+
+        </div>
+    </div>
+
+    <div id="myForm_3" style="display: none;">
+        <div class="form-container">
+            <span style="user-select: none;" class="close" onclick="hideForm('myForm_3')">&times;</span>
+
+            <div class="card-body d-flex justify-content-evenly">
+                <div id="form-style_5" class="border-end p-5">
+                    {% csrf_token %}
+                    <h1>Title</h1>
+                    <div>{{ form.chart_5_title }}</div>
+                    <br>
+                    <h3>Gauge Reading</h3>
+                    <div>{{ form.chart_5_1 }}</div>
+
+                    <div class="row">
+                        <div class="col-6 form-group">
+                            <label for="id_chart_1_min">Min:</label>
+                            {{ form.chart_5_min }}
+                            <small class="text-muted">Enter minimum value</small>
+                        </div>
+                        <div class="col-6 form-group">
+                            <label for="id_chart_1_max">Max:</label>
+                            {{ form.chart_5_max }} <small class="text-muted">Enter maximum value</small>
+                        </div>
+                    </div>
+                    <div>Threshold {{ form.chart_5_thresh_hold }}
+                        <small class="text-muted">Enter Threshold</small>
+                    </div>
+
+                    <br>
+                    <h3>Measure 1</h3>
+                    <div>{{ form.chart_5_2 }}</div>
+                    <h3>Measure 2</h3>
+                    <div>{{ form.chart_5_3 }}</div>
+                    <h3>Measure 3</h3>
+                    <div>{{ form.chart_5_4 }}</div>
+                    <h3>Measure 4</h3>
+                    <div>{{ form.chart_5_5 }}</div>
+
+                </div>
+
+                <div id="form-style_6" class="border-start p-5 ">
+                    <h1>Title</h1>
+                    <div>{{ form.chart_6_title }}</div>
+                    <br>
+                    <h3>Gauge Reading</h3>
+                    <div>{{ form.chart_6_1 }}</div>
+
+                    <div class="row">
+                        <div class="col-6 form-group">
+                            <label for="id_chart_1_min">Min:</label>
+                            {{ form.chart_6_min }}
+                            <small class="text-muted">Enter minimum value</small>
+                        </div>
+                        <div class="col-6 form-group">
+                            <label for="id_chart_1_max">Max:</label>
+                            {{ form.chart_6_max }} <small class="text-muted">Enter maximum value</small>
+                        </div>
+                    </div>
+                    <div>Threshold {{ form.chart_6_thresh_hold }}
+                        <small class="text-muted">Enter Threshold</small>
+                    </div>
+
+                    <br>
+                    <h3>Measure 1</h3>
+                    <div>{{ form.chart_6_2 }}</div>
+                    <h3>Measure 2</h3>
+                    <div>{{ form.chart_6_3 }}</div>
+                    <h3>Measure 3</h3>
+                    <div>{{ form.chart_6_4 }}</div>
+                    <h3>Measure 4</h3>
+                    <div>{{ form.chart_6_5 }}</div>
+
+                </div>
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary">Update</button>
+
+        </div>
+    </div>
+
+    <div id="myForm_4" style="display: none;">
+        <div class="form-container">
+            <span style="user-select: none;" class="close" onclick="hideForm('myForm_4')">&times;</span>
+
+            <div class="card-body d-flex justify-content-evenly">
+                {% csrf_token %}
+                <h1 class="col">Graph 1</h1>
+            </div>
+            <div class="col-12">{{ form.graph_1 }}</div>
+            <br>
+            <button type="submit" class="btn btn-primary">Update</button>
+
+        </div>
+    </div>
+</form>
+
+<script>
+    $(document).ready(function () {
+        var chartDom = document.getElementById('main');
+        var myChart = echarts.init(chartDom);
+
+        var chartDom_2 = document.getElementById('main2');
+        var myChart_2 = echarts.init(chartDom_2);
+
+        var chartDom_3 = document.getElementById('main3');
+        var myChart_3 = echarts.init(chartDom_3);
+
+        var chartDom_4 = document.getElementById('main4');
+        var myChart_4 = echarts.init(chartDom_4);
+
+        var chartDom_5 = document.getElementById('main5');
+        var myChart_5 = echarts.init(chartDom_5);
+
+        var chartDom_6 = document.getElementById('main6');
+        var myChart_6 = echarts.init(chartDom_6);
+
+        var chartDom_Graph1 = document.getElementById('Graph_1');
+        var myChart_Graph1 = echarts.init(chartDom_Graph1);
+
+        var option;
+        var option_Graph1;
+
+        chartDom_list = [chartDom, chartDom_2, chartDom_3, chartDom_4, chartDom_5, chartDom_6]
+        myChart_list = [myChart, myChart_2, myChart_3, myChart_4, myChart_5, myChart_6]
+
+        option = {
+            tooltip: {
+                formatter: '{b} : {c}'
+            },
+            series: [
+                {
+                    type: 'gauge',
+                    splitNumber: 4,
+                    min: 0,
+                    max: 500,
+                    progress: {
+                        show: false,
+                        width: 18
+                    },
+                    pointer: {
+                        itemStyle: {
+                            color: 'auto'
+                        }
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            width: 18,
+                            color: [
+                                [0.8, '#5470c6'],
+                                [1, '#fd666d']
+                            ]
+                        }
+                    },
+                    axisTick: {
+                        distance: -17,
+                        length: 8,
+                        lineStyle: {
+                            color: '#fff',
+                            width: 2
+                        }
+                    },
+                    splitLine: {
+                        length: 17,
+                        distance: -17,
+                        lineStyle: {
+                            width: 3,
+                            color: '#fff'
+                        }
+                    },
+                    axisLabel: {
+                        distance: 25,
+                        color: '#fff',
+                        fontSize: '10vw'
+                    },
+                    anchor: {
+                        show: false,
+                        showAbove: false,
+                        size: '25vw',
+                        itemStyle: {
+                            borderWidth: 10
+                        }
+                    },
+                    title: {
+                        show: true,
+                        offsetCenter: [0, '100%'],
+                        color: '#fff',
+                    },
+                    detail: {
+                        valueAnimation: true,
+                        fontSize: "30%",
+                        offsetCenter: [0, '70%'],
+                        color: '#fff',
+                    },
+                    data: [
+                        {
+                            value: 0,
+                            name: 'None',
+                            color: 'inherit'
+                        }
+                    ]
+                }
+            ]
+        };
+
+        option_Graph1 = {
+            title: {
+                text: 'Graph',
+            },
+            tooltip: {
+                trigger: 'item',
+                axisPointer: {
+                    type: 'cross',
+                    label: {
+                        backgroundColor: '#6a7985'
+                    }
+                }
+            },
+            legend: {
+                data: ['Email', 'Union Ads', 'Video Ads', 'Direct', 'Search Engine'],
+                color: "white"
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true,
+            },
+            toolbox: {
+                feature: {
+                    dataZoom: {
+                        yAxisIndex: 'none'
+                    },
+                    dataView: { readOnly: false },
+                    restore: {},
+                    saveAsImage: {}
+                }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [
+                // {
+                //     name: 'Email',
+                //     type: 'line',
+                //     stack: 'Total',
+                //     smooth: true,
+                //     data: [120, 132, 101, 134, 90, 230, 210]
+                // },
+            ]
+        };
+
+        function fetchData() {
+            $.ajax({
+                url: "{% url 'diagrams_chart_data' device.id %}", // Replace 'some_name' with the actual name parameter or handle dynamically
+                type: "GET",
+                success: function (data) {
+                    // console.log(data)
+                    for (i = 0; i < myChart_list.length; i++) {
+                        total = (data[0][`chart_${i + 1}_max`] - data[0][`chart_${i + 1}_min`])
+                        thresh_hold = (data[0][`chart_${i + 1}_thresh_hold`] / total)
+
+                        myChart_list[i].setOption({
+                            series: [
+                                {
+                                    min: data[0][`chart_${i + 1}_min`],
+                                    max: data[0][`chart_${i + 1}_max`],
+                                    data: [
+                                        {
+                                            value: data[0][`chart_${i + 1}_1_measure`],
+                                            name: data[0][`chart_${i + 1}_1`],
+                                        }
+                                    ],
+                                    axisLine: {
+                                        lineStyle: {
+                                            color: [
+                                                [thresh_hold, '#5470c6'],
+                                                [1, '#fd666d']
+                                            ]
+                                        }
+                                    },
+
+                                }
+                            ]
+                        });
+
+                        document.getElementById(`chart_${i + 1}_title`).innerHTML = data[0][`chart_${i + 1}_title`]
+
+                        for (j = 2; j < 6; j++) {
+                            // console.log(data[0][`chart_${i + 1}_${j}_measure`])
+                            document.getElementById(`chart_${i + 1}_${j}_measure`).innerHTML = data[0][`chart_${i + 1}_${j}_measure`][0] + " " + data[0][`chart_${i + 1}_${j}_measure`][1]
+                            document.getElementById(`chart_${i + 1}_${j}`).innerHTML = data[0][`chart_${i + 1}_${j}`]
+                        }
+                    }
+                },
+                error: function (error) {
+                    console.log("Error fetching data:", error);
+                }
+            });
+        }
+        // setInterval(fetchData, 10000); // Fetch new data every 2 seconds
+        fetchData()
+
+
+        function fetchDataGraph() {
+            $.ajax({
+                url: "{% url 'diagrams_chart_graph' device.id %}", // Replace 'some_name' with the actual name parameter or handle dynamically
+                type: "GET",
+                success: function (data) {
+                    let seriesData = [];
+                    console.log(data)
+                    // console.log(data.result["L1 Current"][0].value)
+
+                    myChart_Graph1.setOption({
+                        legend: {
+                            data: data.legends,
+                        },
+                        xAxis: {
+                            type: 'category',
+                            boundaryGap: false,
+                            data: data.time
+                        },
+                    })
+
+                    data.result.forEach(item => {
+                        console.log(item);
+                        seriesData.push({
+                            name: item.name,
+                            type: 'line',
+                            smooth: true,
+                            data: item.value,
+                            emphasis: {
+                                focus: 'series'
+                            },
+                        });
+                    });
+                    console.log(seriesData)
+                    myChart_Graph1.setOption({
+                        series: seriesData
+                    });
+
+
+                },
+                error: function (error) {
+                    console.log("Error fetching data:", error);
+                }
+            });
+        }
+        fetchDataGraph()
+
+
+        option && myChart.setOption(option);
+        option && myChart_2.setOption(option);
+        option && myChart_3.setOption(option);
+        option && myChart_4.setOption(option);
+        option && myChart_5.setOption(option);
+        option && myChart_6.setOption(option);
+        option && myChart_Graph1.setOption(option_Graph1);
+
+
+        window.addEventListener('resize', function () {
+            // Resize container and chart
+            for (i = 0; i < chartDom_list.length; i++) {
+                chartDom_list[i].style.width = '100%';
+                chartDom_list[i].style.height = '30vh';
+
+                chartDom_Graph1.style.width = "100%"
+                chartDom_Graph1.style.height = "50vh"
+
+                myChart_Graph1.resize();
+                myChart_list[i].resize();
+            }
+        });
+    });
+
+
+    function showForm_1() {
+        document.getElementById("myForm_1").style.display = "flex";
+    }
+    function showForm_2() {
+        document.getElementById("myForm_2").style.display = "flex";
+    }
+    function showForm_3() {
+        document.getElementById("myForm_3").style.display = "flex";
+    }
+    function showForm_4() {
+        document.getElementById("myForm_4").style.display = "flex";
+    }
+
+
+    function hideForm(formId) {
+        // Your logic to hide the form, e.g., setting display to none
+        const form = document.getElementById(formId);
+        if (form) {
+            form.style.display = "none";
+        }
+    }
+
+    window.onclick = function (event) {
+        const forms = ["myForm_1", "myForm_2", "myForm_3", "myForm_4"];
+        forms.forEach(function (formId) {
+            const form = document.getElementById(formId);
+            if (event.target === form) {
+                hideForm(formId);
+            }
+        });
+    }
+
+</script>
+{% endblock %}

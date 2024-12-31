@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<div class="col-md-12" style="margin: 1%;">
+  <h1>Data Logs</h1>
+  <br>
+
+  <div class="row g-4">
+    {% if records %}
+    {% for record in records %}
+
+
+    <div class="card" style="width: 18rem; margin-right: 1rem; background-color: #e0f1f1;">
+      <div class="card-body">
+        <h6 class="card-title">{{ record.device_name }}</h6>
+        <p class="card-text">connection type: {{ record.connection_type }} : {{ record.port_conf }}</p>
+        <p class="card-text">Activation: {{ record.signals }}</p>
+        <p class="card-text"> Device Signal: <span class="device_status">{{ record.device_status }}</span></p>
+        <p class="card-text">Manufacturer: {{ record.manufacturer}}</p>
+        <a href='{% url "data_logs" record.id %}' class="btn btn-primary stretched-link">Data logs</a>
+
+      </div>
+    </div>
+
+    {% endfor %}
+    {%endif%}
+
+  </div>
+</div>
+
+
+
+
+<script>
+
+  const elements = document.querySelectorAll('.device_status');
+
+  elements.forEach(element => {
+    console.log(element.innerText.trim())
+    if (element.innerText.trim() == 'Offline') {
+      element.style.color = 'red'
+    }
+    else {
+      element.style.color = 'green'
+    }
+  });
+
+</script>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- <div class="col-md-6 offset-md-3"> -->
+<div class="row" style="margin-right: 10px;">
+    <div class="container">
+        {% if devices %}
+        <div class="card" style="background-color: #23272b;">
+            <div class="card-body">
+                <h1 style="color: white;">Registers</h1>
+                <br>
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <!-- <th scope="col"><input type="checkbox"></th> -->
+                            <th scope="col">ID</th>
+                            <th scope="col">Device Name</th>
+                            <th scope="col">Connection Type</th>
+                            <th scope="col">Port Configuration</th>
+                            <th scope="col">Signal</th>
+                            <th scope="col">Manufacturer</th>
+                            <th scope="col">Settings</th>
+                        </tr>
+                    </thead>
+                    {% if devices %}
+                    {% for device in devices %}
+                    <tbody class="table-group-divider">
+                        <tr>
+                            <!-- <th scope="row"><input type="checkbox"></th> -->
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ device.device_name }}</td>
+                            <td>{{ device.connection_type }}</td>
+                            <td>{{ device.port_conf }}</td>
+                            <td>{{ device.signals }}</td>
+                            <td>{{ device.manufacturer }}</td>
+
+                            <td><a class="btn btn-dark" href='{% url "register_addresses" device.id %}'><i class="fa-solid fa-pen-to-square"></i></a></td>
+
+                        </tr>
+                    </tbody>
+                    {% endfor %}
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <h1>Please register a device to start</h1>
+
+        {%endif%}
+
+    </div>
+</div>
+{% endblock %}

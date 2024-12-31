@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="row">
+    <div class="col-4">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title">User Information</h1>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <h4> Account : {{ request.user }} </h4>
+                </li>
+                <li class="list-group-item">
+                    <h4> First Name : {{ request.user.first_name }}</h4>
+                </li>
+                <li class="list-group-item">
+                    <h4> Last Name : {{ request.user.last_name }} </h4>
+                </li>
+                <li class="list-group-item">
+                    <h4> Personal Email : {{ request.user.email }} </h4>
+                </li>
+
+                <li class="list-group-item">
+                    <h4>
+                        Privilege :
+                        {% for group in request.user.groups.all %}
+                        {{ group.name }},
+                        {% endfor %}
+                    </h4>
+                </li>
+
+
+                {% if is_admin %}
+                <li class="list-group-item">
+                    <form method="POST" action="">
+                        {% csrf_token %}
+                        <input type="email" placeholder="New Master Email" name="master_email" id="master-email-input"
+                            class="form-control" style="margin-bottom: 1%;" hidden></input>
+
+                        <button type="button" class="btn btn-dark float-end" id="edit-button"> <i
+                                class="fa-solid fa-pen"></i> </button>
+                        <button type="submit" class="btn btn-success float-end" id="submit-button" hidden> Submit <i
+                                class="fa-solid fa-check"></i> </button>
+                        <button type="button" class="btn btn-danger" id="cancel-button" hidden> Cancel <i
+                                class="fa-solid fa-xmark"></i> </button>
+                        <h4 id="master-email-display"> Master Email: {{ email.email }}</h4>
+                    </form>
+                </li>
+                {% endif %}
+
+
+            </ul>
+        </div>
+    </div>
+
+    <!-- <div class="col-8">
+
+
+
+    </div> -->
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const editButton = document.getElementById('edit-button');
+        const submitButton = document.getElementById('submit-button');
+        const cancelButton = document.getElementById('cancel-button');
+        const emailInput = document.getElementById('master-email-input');
+        const emailDisplay = document.getElementById('master-email-display');
+
+        editButton.addEventListener('click', function () {
+            emailInput.hidden = false;
+            submitButton.hidden = false;
+            cancelButton.hidden = false;
+            emailDisplay.hidden = true;
+            editButton.hidden = true;
+        });
+
+        cancelButton.addEventListener('click', function () {
+            emailInput.hidden = true;
+            submitButton.hidden = true;
+            cancelButton.hidden = true;
+            emailDisplay.hidden = false;
+            editButton.hidden = false;
+        });
+    });
+</script>
+{% endblock %}

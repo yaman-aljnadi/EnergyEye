@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="col-md-12" style="margin: 1%;">
+    <h1>Historical Data from {{ table_name_view }}</h1>
+    <br>
+  
+    <div class="row g-4">
+      {% if data %}
+      {% for row in data %}
+  
+      <div class="card" style="width: 18rem; margin-right: 1rem;">
+        <div class="card-body">
+          <h6 class="card-title">Device ID: {{ forloop.counter }}</h6>
+          <h6 class="card-title">Device Name: {{ row.device_name }}</h6>
+          <a href="{% url 'historical_data_by_device_id' table_name=table_name device_id=row.device_id %}" class="stretched-link"></a>
+        </div>
+      </div>
+  
+      {% endfor %}
+      {%endif%}
+  
+    </div>
+  </div>
+  
+
+{% endblock %}
