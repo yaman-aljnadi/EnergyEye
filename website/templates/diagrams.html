@@ -91,6 +91,7 @@
         const chart = echarts.init(container);
         const exampleUrl = "{% url 'diagrams_device' '1' %}";
 
+
         // Define an array of colors for the groups
         const groupColors = [
             "black", "#4b50a3", " #943a77", "#39893a", "#6c3989", "#894439",
@@ -170,7 +171,7 @@
                         },
                         applicationRole: {
                             color: "#727272",
-                            padding: [20, 5]
+                            padding: [20, 15]
                         },
                     }
                 }
@@ -193,6 +194,7 @@
 
             chart.on("mouseover", function (event) {
                 console.log('Mouseover event:', event);
+
 
                 const device_id = Number(event.data.name);
                 const deviceUrl = `{% url 'device_tree_view_element' 0 %}`.replace('0', device_id);
@@ -219,19 +221,9 @@
                         popup.style.display = 'none';
 
                         const containerRect = container.getBoundingClientRect();
-                        let x = event.event.offsetX;
-                        let y = event.event.offsetY;
 
-                        if (x + popupWidth > containerRect.width) {
-                            x -= popupWidth; // Add a little offset
-                        }
-
-                        if (y + popupHeight > containerRect.height) {
-                            y -= (popupHeight - 400); // Add a little offset
-                        }
-
-                        popup.style.left = `${x - 200}px`;
-                        popup.style.top = `${y}px`;
+                        popup.style.top = `${containerRect.top}px`;
+                        popup.style.left = `${containerRect.right}`;
                         popup.style.display = 'block';
                     }
                 });

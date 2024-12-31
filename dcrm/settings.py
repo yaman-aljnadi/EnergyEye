@@ -142,10 +142,11 @@ CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 ###running redis server in the background
 # redis-server --daemonize yes
 
-# Worker = watchmedo auto-restart --directory=./ --pattern=*.py --recursive -- celery -A dcrm worker --pool=solo --concurrency=1 -l info
-# Beat = watchmedo auto-restart --directory=./ --pattern=*.py --recursive -- celery -A dcrm beat -l info
+# OLD_Worker = watchmedo auto-restart --directory=./ --pattern=*.py --recursive -- celery -A dcrm worker --pool=solo --concurrency=1 -l info
 
-# watchmedo auto-restart --directory=./ --pattern=*.py --recursive -- celery -A dcrm worker -l info -P gevent
+
+# NEW_Worker = watchmedo auto-restart --directory=./ --pattern=*.py --recursive -- celery -A dcrm worker -l info -P gevent
+# Beat = watchmedo auto-restart --directory=./ --pattern=*.py --recursive -- celery -A dcrm beat -l info
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
