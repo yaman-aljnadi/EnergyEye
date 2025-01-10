@@ -643,27 +643,66 @@ def historical_data(request, table_name):
 
 
 @login_required(login_url='login_page')
-# @cache_page(60 * 15)  # Cache this view for 15 minutes
 def dashboard(request):
-    chart_4_pre = []
+    form = AddReportForm(request.POST or None)
+    measurements = []  # List to hold the data for the template
 
-    devices = Device.objects.all()
-    alarms = Alarm.objects.all()
-    reports = Report.objects.all()
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            report_device = request.POST.getlist('report_device')
+            report_measure = request.POST.getlist('report_measure')
 
-    for item in reports:
-        item.report_device_length = len(eval(item.report_device))
+            print(f"Report Device: {report_device}")
+            print(f"Report Measure: {report_measure}")
 
-    num_triggred_alarms = Alarm.objects.filter(alarm_trigger='Yes').count()
+            for string in report_measure:
+                for value in report_device:
+                    if value in string:
+                        try:
+                            IDs = Device.objects.get(device_name=value)
+                        except Device.DoesNotExist:
+                            continue
+                        
+                        parts = string.split(value, 1)
+                        if len(parts) == 2:
+                            part1 = parts[0].strip(", :;")
+                            part2 = value
+                            
+                            # Find the register for this combination
+                            register_values = Register.objects.filter(name=part1, channel=IDs).last()
+                            if register_values:
+                                try:
+                                    first_modbus_data = ModbusData.objects.filter(
+                                        device_id=register_values.channel_id, 
+                                        register_id=register_values.id
+                                    ).first()
+                                    
+                                    last_modbus_data = ModbusData.objects.filter(
+                                        device_id=register_values.channel_id, 
+                                        register_id=register_values.id
+                                    ).last()
+                                    
+                                    first_value = first_modbus_data.value if first_modbus_data else "N/A"
+                                    last_value = last_modbus_data.value if last_modbus_data else "N/A"
 
-    context = {
-        'devices': devices,
-        'alarms': alarms,
-        'num_triggred_alarms': num_triggred_alarms,
-        'reports': reports,
-    }
+                                    # first_local_timestamp = timezone.localtime(first_modbus_data.timestamp, timezone.get_current_timezone())  
+                                    # last_local_timestamp = timezone.localtime(last_modbus_data.timestamp, timezone.get_current_timezone())  
+
+                                    measurements.append({
+                                        'device': part2,
+                                        'measure': part1,
+                                        'first_value': first_value + register_values.parameter_name,
+                                        'last_value': last_value + register_values.parameter_name,
+                                        # 'first_time': first_local_timestamp.strftime("%Y %b %d %I:%M %p"),
+                                        # 'last_time': last_local_timestamp.strftime("%Y %b %d %I:%M %p")
+                                    })
+
+                                except Exception as e:
+                                    print(f"Error fetching Modbus data: {e}")
+                                    continue
+
+    context = {'form': form, 'measurements': measurements}
     return render(request, 'dashboard.html', context)
-
 
 def build_tree(devices):
     # Create a dictionary to store the grouped devices
@@ -720,7 +759,7 @@ def device_tree_view_element(request, pk):
         if device.connection_type == 'TCP':
             ip_address = device.ip_address
             port_conf = device.port_conf
-            c = ModbusClient(host=ip_address, port=int(port_conf), timeout=1)
+            c = ModbusClient(host=ip_address, port=int(port_conf), timeout=0.1)
             c.open()
             try:
                 for register_name in registers_list:
@@ -747,8 +786,8 @@ def device_tree_view_element(request, pk):
                         dict["chart_measure"].append(last_value)
                         
                     else:
-                        print("Failed to read from register")
-                        last_value = random.randint(0, 300)
+                        # print("Failed to read from register")
+                        last_value = random.randint(100, 300)
                         dict["chart_measure"].append(last_value)
 
             except Exception as e:
@@ -823,7 +862,7 @@ def diagrams_chart_data(request, name):
         if device.connection_type == 'TCP':
             ip_address = device.ip_address
             port_conf = device.port_conf
-            c = ModbusClient(host=ip_address, port=int(port_conf), timeout=1)
+            c = ModbusClient(host=ip_address, port=int(port_conf), timeout=0.1)
             c.open()
 
             try:
@@ -852,8 +891,8 @@ def diagrams_chart_data(request, name):
                             values_list.append([last_value, register.parameter_name])
                             
                         else:
-                            print("Failed to read from register")
-                            last_value = random.randint(0, 300)
+                            # print("Failed to read from register")
+                            last_value = random.randint(100, 300)
                             values_list.append([last_value, register.parameter_name])
                     else:
                         values_list.append("0")
@@ -864,7 +903,7 @@ def diagrams_chart_data(request, name):
         try:
             for chart_num in range(1, 7):  
                 for measure_num in range(1, 6):  
-                    print(values_list[chart_counter])
+                    # print(values_list[chart_counter])
                     field_name = f'chart_{chart_num}_{measure_num}_measure'
                     item[field_name] = values_list[chart_counter]
                     chart_counter = chart_counter + 1

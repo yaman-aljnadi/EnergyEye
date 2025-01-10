@@ -1,250 +1,96 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<!-- <script src="https://cdn.plot.ly/plotly-2.32.0.min.js" charset="utf-8"></script> -->
-
-<br>
-
-<div class="row">
-    <div class="col-10 offset-1">
-        <div class="card" style="width: 100%">
-            <div class="card-body">
-                <h7 class="card-title d-flex justify-content-center">Devices
-                </h7>
-
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <!-- <th scope="col"><input type="checkbox"></th> -->
-                            <th scope="col" id="">ID</th>
-                            <th scope="col" id="">Device Name</th>
-                            <th scope="col" id="">Device Group</th>
-                            <th scope="col" id="">Connection Type</th>
-                            <th scope="col" id="">Activation</th>
-                            <th scope="col" id="">Manufacturer</th>
-                            <th scope="col" id="">Device Status</th>
-                            {% if is_admin %}
-                            <th scope="col">Settings</th>
-                            <th scope="col">#</th>
-                            {% endif %}
-
-                        </tr>
-                    </thead>
-                    {% if devices %}
-                    {% for device in devices %}
-                    <tbody class="table-group-divider">
-                        <tr>
-                            <!-- <th scope="row"><input type="checkbox"></th> -->
-                            <td>{{ forloop.counter }}</td>
-                            <td>{{ device.device_name }}</td>
-                            <td>{{ device.group }}</td>
-                            <td>{{ device.connection_type }} : {{ device.port_conf }}</td>
-                            <td>{{ device.signals }}</td>
-                            <td>{{ device.manufacturer }}</td>
-                            <td class="device_status">{{ device.device_status }}</td>
-                            {% if is_admin %}
-                            <td><a class="btn btn-dark" href='{% url "update_device" device.id %}'>Configure Device</a>
-                            </td>
-                            <td><a class="btn btn-danger confirm-delete"
-                                    href='{% url "delete_device" device.id %}'>Delete Device</a></td>
-                            {% endif %}
-
-                        </tr>
-                    </tbody>
-                    {% endfor %}
-                    {% endif %}
-                </table>
-            </div>
-        </div>
-        <br>
-    </div>
-
-    <!-- 
-    <div class="col-3">
-        <div class="card d-flex align-content-center" style="width: 100%; height: 14rem;">
-            <div class="card-body ">
-
-                <h7 class="card-title d-flex justify-content-center">Alarms
-                </h7>
-                {% if num_triggred_alarms != 0 %}
-                <p class="card-text d-flex justify-content-center">Triggered Alarms : {{ num_triggred_alarms }}</p>
-                <p class="card-text d-flex justify-content-center">Last Triggred Alarm</p>
-                <p class="card-text d-flex justify-content-center">Device: {{ last_alarm.alarm_device }}</p>
-                <p class="card-text d-flex justify-content-center m-0">Triggred at</p>
-                <p class="card-text d-flex justify-content-center m-0">{{ last_alarm.alarm_triggered_at }}</p>
-                {% else %}
-                <p class="card-text d-flex justify-content-center">There are not triggred alarms</p>
-                {% endif %}
-                <a href='{% url "alarms" %}' class="stretched-link"></a>
-            </div>
-        </div>
-    </div> -->
-
-    <div class="col-10 offset-1">
-        <div class="card" style="width: 100%;">
-            <div class="card-body">
-                <h7 class="card-title d-flex justify-content-center">Alarms
-                </h7>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <!-- <th scope="col"><input type="checkbox"></th> -->
-                            <th scope="col">ID</th>
-                            <th scope="col">Device</th>
-                            <th scope="col">Measure</th>
-                            <th scope="col">Description</th>
-                            <th scope="col">Min</th>
-                            <th scope="col">Max</th>
-                            <th scope="col">Activation</th>
-                            <th scope="col">Status</th>
-                            <!-- <th scope="col">Email</th> -->
-                            <th scope="col">Triggered</th>
-                            {% if is_admin %}
-                            <th scope="col">Settings</th>
-                            <th scope="col">#</th>
-                            <th scope="col">#</th>
-                            {% endif %}
-                        </tr>
-                    </thead>
-                    {% if alarms %}
-                    {% for alarm in alarms %}
-                    <tbody class="table-group-divider">
-                        <tr>
-                            <!-- <th scope="row"><input type="checkbox"></th> -->
-                            <td>{{ forloop.counter }}</td>
-                            <td>{{ alarm.alarm_device }}</td>
-                            <td>{{ alarm.alarm_measure }}</td>
-                            <td>{{ alarm.alarm_description }}</td>
-                            <td>{{ alarm.alarm_min }}</td>
-                            <td>{{ alarm.alarm_max }}</td>
-                            <td>{{ alarm.alarm_activation }}</td>
-                            <td>{{ alarm.alarm_status }}</td>
-                            <!-- <td>{{ alarm.alarm_emails }}</td> -->
-                            <td>{{ alarm.alarm_trigger }}
-                                {% if alarm.alarm_trigger == 'Yes' %}
-                            </td>
-
-                            {% endif %}
-
-                            {% if is_admin %}
-                            <td><a class="btn btn-success" href='{% url "reset_alarm" alarm.id %}'>Reset Alarm</a></td>
-                            <td><a class="btn btn-dark" href='{% url "update_alarm" alarm.id %}'>Configure Alarm</a>
-                            </td>
-                            <td><a class="btn btn-danger" href='{% url "delete_alarm" alarm.id %}'>Delete Alarm</a></td>
-                            {% endif %}
-                        </tr>
-                        {% if alarm.alarm_trigger == 'Yes' %}
-
-                        <tr>
-                            <td colspan="13">
-                                <div class="collapse multi-collapse" id="multiCollapseExample{{alarm.id}}">
-                                    {% for trigger in triggered_alarms %}
-                                    {% if trigger.trigger_alarm_id == alarm.id %}
-                                    <div class="card card-body">
-                                        {{ trigger.timestamp| date:"Y M d g:i:s "}} <span>Data:
-                                            {{trigger.trigger_data}}</span>
-
-                                    </div>
-                                    {% endif %}
-                                    {% endfor %}
-                                </div>
-                            </td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td></td>
-                        </tr>
-                        {% endif %}
-                    </tbody>
-                    {% endfor %}
-                    {% endif %}
-                </table>
-            </div>
-        </div>
-        <br>
-    </div>
-
-
-    <div class="col-10 offset-1">
-        <div class="card" style="width: 100%">
-            <div class="card-body">
-                <h7 class="card-title d-flex justify-content-center">Reports
-                </h7>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <!-- <th scope="col"><input type="checkbox"></th> -->
-                            <th scope="col">ID</th>
-                            <th scope="col">Devices</th>
-                            <th scope="col">Measures</th>
-                            <th scope="col">Interval</th>
-                            <th scope="col">Description</th>
-                            <th scope="col">Status</th>
-                            <!-- <th scope="col">Email</th> -->
-                            {% if is_admin %}
-                            <th scope="col">Settings</th>
-                            <th scope="col">#</th>
-                            {% endif %}
-                        </tr>
-                    </thead>
-                    {% if reports %}
-                    {% for report in reports %}
-                    <tbody class="table-group-divider">
-                        <tr>
-                            <!-- <th scope="row"><input type="checkbox"></th> -->
-                            <td>{{ forloop.counter }}</td>
-
-                            <td>Total {{ report.report_device_length }}
-                                <button class="btn btn-sm" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#Device_List{{report.id}}" aria-expanded="false" aria-controls=""><i
-                                        class="fa-solid fa-arrow-down"></i></button>
-                            </td>
-
-                            <td>Readings {{ report.report_measure_length }}
-                                <button class="btn btn-sm" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#Measure_List{{report.id}}" aria-expanded="false"
-                                    aria-controls=""><i class="fa-solid fa-arrow-down"></i></button>
-                            </td>
-
-                            <td>{{ report.report_activation }} {{ report.report_interval_hours }}:{{
-                                report.report_interval_minutes }} {{ report.report_timezone }}</td>
-                            <td>{{ report.report_description }}</td>
-                            <td>{{ report.report_status }}</td>
-                            <!-- <td>{{ report.report_emails }}</td> -->
-                    </tbody>
-                    {% endfor %}
-                    {% endif %}
-                </table>
-            </div>
-        </div>
-    </div>
-
-</div>
-
-
-
-<br>
-<br>
-
-
-
 
 <script>
-
-
-    const elements = document.querySelectorAll('.device_status');
-    elements.forEach(element => {
-        console.log(element.innerText.trim())
-        if (element.innerText.trim() == 'Offline') {
-            element.style.color = 'red'
-        }
-        else {
-            element.style.color = 'green'
-        }
-    });
-
-
+    $('select').selectpicker();
 </script>
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
+{{ form.media }}
+
+
+<h1>Bill Electricity Calculator</h1>
+
+<div class="row">
+    <div class="col-11"
+        style="background-color: #8b8b8b; margin-left: 1vw; padding-bottom: 2vh; border-radius: 20px; margin-top: 1vh; padding-top: 1vh;">
+
+        <div class="">
+            <br />
+
+            <form method="POST" class="row g-4", style="background-color: white;">
+                {% csrf_token %}
+                <div class="col-md-3"> Devices
+                    {{ form.report_device }}
+                </div>
+                <div class="col-md-3"> Measures
+                    {{ form.report_measure }}
+                </div>
+
+                <button type="submit" class="btn btn-primary">Create Report</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% if measurements %}
+    <h2>Report Results</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Device</th>
+                <th>Measure</th>
+                <th>First Value</th>
+                <th>Last Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in measurements %}
+                <tr>
+                    <td>{{ item.device }}</td>
+                    <td>{{ item.measure }}</td>
+                    <td>{{ item.first_value }},  {{ item.first_time }}</td>
+                    <td>{{ item.last_value }},  {{ item.last_time }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+<script>
+    $(document).ready(function () {
+        function updateMeasureOptions() {
+            var selectedDevices = $('#id_report_device').val();
+            var allMeasures = $('#id_report_measure option');
+            console.log(selectedDevices)
+            allMeasures.each(function () {
+                var measure = $(this);
+                measureDevices = measure.val()
+
+                if (selectedDevices == null) {
+                    measure.hide();
+                }
+                else if (selectedDevices.some(device => measureDevices.includes(device))) {
+                    measure.show();
+                } else {
+                    measure.hide();
+                }
+            });
+
+            $('#id_report_measure').selectpicker('refresh');
+        }
+
+        $('#id_report_device').on('changed.bs.select', updateMeasureOptions);
+        updateMeasureOptions(); // Initial call to set the correct state
+    });
+</script>
+
 
 
 {% endblock %}

@@ -430,3 +430,7 @@ class Diagram_Charts_Form(forms.ModelForm):
         # fields = ["chart_1_title", "chart_2_title", "chart_1_measure"]
 
 
+
+
+
+
