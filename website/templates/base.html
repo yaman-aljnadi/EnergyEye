@@ -8,8 +8,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>EnergyEye</title>
-    <link rel="icon" href="{% static 'images/logo3.png' %}">
+    <link rel="icon" href="{% static 'images/logo01_Icon.png' %}">
     <link href="{% static 'bootstrap-5.3.3-dist\css\bootstrap.min.css' %}" rel="stylesheet">
+    <script src="{% static 'bootstrap-5.3.3-dist\js\bootstrap.min.js' %}"></script>
 
     <link rel="stylesheet" href="{% static 'CSS/base.css' %}">
 </head>
@@ -62,8 +63,7 @@
 <body onload="startTime()">
     <!-- <div class="container"> -->
     <!-- </br> -->
-    <nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="z-index: 5; background-color: #23272b;"
-        id="navbar_id">
+    <nav id="navbar_id" class="navbar navbar-expand-lg navbar-dark sticky-top" style="z-index: 5; background-color: #23272b; height: 10vh; position: fixed; width: 100%;">
         <div class="container-fluid">
             <a class="navbar-brand" href="{% url 'home' %}">
                 <h2><b>EnergyEye</b></h2>
@@ -138,20 +138,20 @@
     {% if user.is_authenticated %}
     <div class="wrapper">
         <div class="columns">
-            <aside class="column is-1 aside" id="sidebar">
+            <aside class="column is-1 aside" id="sidebar" style="position: sticky; overflow-y: auto; top: 10vh;">
                 <nav class="menu">
-                    <ul style="padding-top: 1rem; padding-left: 1vw;">
-                        <li><a id="SideText" href="{% url 'dashboard' %}"><span class="icon is-small"><i
+                    <ul style="padding-top: 1vh; padding-left: 1vw;">
+                        <li style="line-height: 1px"><a id="SideText" href="{% url 'dashboard' %}"><span class="icon is-small"><i
                                         class="fa-solid fa-square-poll-horizontal"></i></span> &nbsp; Dashboard</a></li>
                         <br>
-                        <li><a id="SideText" href="{% url 'devices' %}"><span class="icon is-small"><i
+                        <li style="line-height: 1px"><a id="SideText" href="{% url 'devices' %}"><span class="icon is-small"><i
                                         class="fa fa-desktop"></i></span> &nbsp; Devices</a></li>
                         <br>
-                        <li><a id="SideText" href="{% url 'addresses' %}"><span class="icon is-small"><i
+                        <li style="line-height: 1px"><a id="SideText" href="{% url 'addresses' %}"><span class="icon is-small"><i
                                         class="fa-solid fa-terminal"></i></span>
                                 &nbsp; Register Addresses</a></li>
                         <br>
-                        <li><a id="SideText" href="{% url 'data_logs_devices' %}"><span class="icon is-small"><i
+                        <li style="line-height: 1px"><a id="SideText" href="{% url 'data_logs_devices' %}"><span class="icon is-small"><i
                                         class="fa fa-table"></i></span>
                                 &nbsp; Data logs</a></li>
                         <br>
@@ -159,27 +159,27 @@
                         <!-- <li><a id="SideText" href="{% url 'charts' %}"><span class="icon is-small"><i
                                         class="fa-solid fa-chart-line"></i></span> &nbsp; Charts</a></li> -->
                         <!-- <br> -->
-                        <li><a id="SideText" href="{% url 'alarms' %}"><span class="icon is-small"><i
+                        <li style="line-height: 1px"><a id="SideText" href="{% url 'alarms' %}"><span class="icon is-small"><i
                                         class="fa-solid fa-triangle-exclamation"></i></span> &nbsp; Alarms</a></li>
                         <br>
-                        <li><a id="SideText" href="{% url 'reports' %}"><span class="icon is-small"><i
+                        <li style="line-height: 1px"><a id="SideText" href="{% url 'reports' %}"><span class="icon is-small"><i
                                         class="fa-solid fa-newspaper"></i></span> &nbsp; Reports</a></li>
                         <br>
-                        <li><a id="SideText" href="{% url 'diagrams' %}"><span class="icon is-small"><i
+                        <li style="line-height: 1px"><a id="SideText" href="{% url 'diagrams' %}"><span class="icon is-small"><i
                                         class="fa-solid fa-diagram-project"></i></span> &nbsp; Diagrams</a></li>
                         <br>
-                        <li><a id="SideText" href="{% url 'historical_data_logs' %}"><span class="icon is-small"><i
+                        <li style="line-height: 1px"><a id="SideText" href="{% url 'historical_data_logs' %}"><span class="icon is-small"><i
                                         class="fa-solid fa-box-archive"></i></span> &nbsp; Historical Data</a></li>
                     </ul>
 
                 </nav>
 
-                <img src="{% static 'images/logo3.png' %}" class="footer-images" alt="Sample image"
-                    style="width: 50%; margin-left: 23%; margin-bottom: 40%;">
+                <img src="{% static 'images/logo01.png' %}" class="footer-images" alt="Sample image"
+                    style="width: 100%; position: center; left: 0.3vw; margin-bottom: 10vh;">
 
             </aside>
 
-            <main class="column main" style="padding-bottom: 0%;">
+            <main id="main_block" class="column main" style="padding-bottom: 100vh; padding-top: 12vh;">
 
                 <br>
                 {% if messages %}
@@ -200,7 +200,6 @@
     </div>
 
 
-    <script src="{% static 'bootstrap-5.3.3-dist\js\bootstrap.min.js' %}"></script>
 </body>
 
 <script>

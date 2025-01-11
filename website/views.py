@@ -32,8 +32,7 @@ import timeit
 import numpy as np
 
 def user_manual_view(request):
-    # file_path = os.path.join(settings.BASE_DIR, 'static', 'UserManual', 'UserManual_EnergyEye.pdf')
-    return FileResponse(open("F:/BCMI-YAMAN-PILOT-TEST/DCRM_ALBADAHA_PROJECT/DCRM_A_Production_Work/website/static/UserManual/UserManual_EnergyEye.pdf", 'rb'), content_type='application/pdf')
+    return FileResponse(open("./website/static/UserManual/UserManual_EnergyEye.pdf", 'rb'), content_type='application/pdf')
 
 def login_page(request):
 
