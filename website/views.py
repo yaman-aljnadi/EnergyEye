@@ -344,24 +344,29 @@ def alarms(request):
 @login_required(login_url='login_page')
 def update_alarm(request, pk):
 
-    alarm_record = Alarm.objects.get(id=pk)
-    device = Device.objects.get(id =alarm_record.channel_id)
+    alarm_record_v2 = Alarm.objects.get(id=pk)
+    device = Device.objects.get(id =alarm_record_v2.channel_id)
 
-    form = AddAlarmForm(device_pk=alarm_record.channel_id, data=request.POST or None, instance=alarm_record)
+    form = AddAlarmForm(device_pk=alarm_record_v2.channel_id, data=request.POST or None, instance=alarm_record_v2)
 
-    form.fields["alarm_description"].initial = alarm_record.alarm_description
-    form.fields["alarm_min"].initial = alarm_record.alarm_min
-    form.fields["alarm_max"].initial = alarm_record.alarm_max
-    form.fields["alarm_emails"].initial = alarm_record.alarm_emails
-    form.fields["alarm_measure"].initial = alarm_record.alarm_measure
+    form.fields["alarm_description"].initial = alarm_record_v2.alarm_description
+    form.fields["alarm_min"].initial = alarm_record_v2.alarm_min
+    form.fields["alarm_max"].initial = alarm_record_v2.alarm_max
+    form.fields["alarm_emails"].initial = alarm_record_v2.alarm_emails
+    form.fields["alarm_measure"].initial = alarm_record_v2.alarm_measure
     if request.method == 'POST':
         if form.is_valid():
             alarm = form.save(commit=False)   
             alarm.channel = device
             form.save()
             return redirect('alarms')
+        else:
+            messages.success(request,"Error in updaing the alarm settings")
+            print(form.errors)
+            return redirect('alarms')
+
     else:
-        return render(request, 'update_alarm.html', {'alarm_record':alarm_record, 'form':form})
+        return render(request, 'update_alarm.html', {'alarm_record_v2':alarm_record_v2, 'form':form})
 
 @login_required(login_url='login_page')
 def delete_alarm(request, pk):

@@ -118,7 +118,7 @@
                     </a>
 
                     <div class="dropdown-menu" id="base_drop_down" aria-labelledby="dropdownMenuLink">
-                            {% for alarm in alarm_record %}
+                            {% for alarm in alarm_record_base %}
                                 <a class="dropdown-item" href="{% url 'alarms' %}">{{ alarm.alarm_device }}</a>
                             {% endfor %}
                     </div>
