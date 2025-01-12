@@ -678,12 +678,14 @@ def dashboard(request):
                                 try:
                                     first_modbus_data = ModbusData.objects.filter(
                                         device_id=register_values.channel_id, 
-                                        register_id=register_values.id
+                                        register_id=register_values.id,
+                                        value__gt=0
                                     ).first()
                                     
                                     last_modbus_data = ModbusData.objects.filter(
                                         device_id=register_values.channel_id, 
-                                        register_id=register_values.id
+                                        register_id=register_values.id,
+                                        value__gt=0
                                     ).last()
                                     
                                     first_value = first_modbus_data.value if first_modbus_data else "N/A"
