@@ -47,8 +47,10 @@
             <tr>
                 <th>Device</th>
                 <th>Measure</th>
-                <th>First Value</th>
-                <th>Last Value</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Total</th>
+                <th>Price Range (0.18 for 1kWh)</th>
             </tr>
         </thead>
         <tbody>
@@ -56,8 +58,10 @@
                 <tr>
                     <td>{{ item.device }}</td>
                     <td>{{ item.measure }}</td>
-                    <td>{{ item.first_value }},  {{ item.first_time }}</td>
-                    <td>{{ item.last_value }},  {{ item.last_time }}</td>
+                    <td>{{ item.first_time }}</td>
+                    <td>{{ item.last_time }}</td>
+                    <td>{{ item.total_measure }}</td>
+                    <td>{{ item.cost }}</td>
                 </tr>
             {% endfor %}
         </tbody>

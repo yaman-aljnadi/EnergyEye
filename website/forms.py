@@ -144,7 +144,7 @@ class ReportDateForm(forms.Form):
     current_day = today.strftime('%Y-%m-%d %H:%M')
 
     report_date_type = forms.ChoiceField(choices=[
-        ('Last_Record', 'Last Record'),
+        ('Last_Record', 'All Records'),
         ('From_To', 'From-To'),
     ], required=True, widget=forms.widgets.Select(attrs={'class':'form-select', 'id': 'report_date_type'}), label='')
 

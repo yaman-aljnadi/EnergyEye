@@ -43,7 +43,7 @@ def login_page(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('home')
+            return redirect('devices')
         else:
             messages.success(request, "Please Check Username and Password")
             return redirect('login_page')
@@ -689,16 +689,20 @@ def dashboard(request):
                                     first_value = first_modbus_data.value if first_modbus_data else "N/A"
                                     last_value = last_modbus_data.value if last_modbus_data else "N/A"
 
-                                    # first_local_timestamp = timezone.localtime(first_modbus_data.timestamp, timezone.get_current_timezone())  
-                                    # last_local_timestamp = timezone.localtime(last_modbus_data.timestamp, timezone.get_current_timezone())  
+                                    first_local_timestamp = timezone.localtime(first_modbus_data.timestamp, timezone.get_current_timezone())  
+                                    last_local_timestamp = timezone.localtime(last_modbus_data.timestamp, timezone.get_current_timezone())  
+
+                                    total_measure = round((float(last_value) - float(first_value)))
 
                                     measurements.append({
                                         'device': part2,
                                         'measure': part1,
                                         'first_value': first_value + register_values.parameter_name,
                                         'last_value': last_value + register_values.parameter_name,
-                                        # 'first_time': first_local_timestamp.strftime("%Y %b %d %I:%M %p"),
-                                        # 'last_time': last_local_timestamp.strftime("%Y %b %d %I:%M %p")
+                                        'total_measure': f"{total_measure}  {register_values.parameter_name}",
+                                        'first_time': first_local_timestamp.strftime("%Y %b %d %I:%M %p"),
+                                        'last_time': last_local_timestamp.strftime("%Y %b %d %I:%M %p"),
+                                        'cost': f'{total_measure * 0.18} SAR'
                                     })
 
                                 except Exception as e:
