@@ -48,7 +48,6 @@ def login_page(request):
             messages.success(request, "Please Check Username and Password")
             return redirect('login_page')
     
-   
     else:
         # print(request.POST)
         return render(request, 'login_page.html', {})
@@ -646,73 +645,6 @@ def historical_data(request, table_name):
     return render(request, 'historical_data.html', context)
 
 
-@login_required(login_url='login_page')
-def dashboard(request):
-    form = AddReportForm(request.POST or None)
-    measurements = []  # List to hold the data for the template
-
-    if request.user.is_authenticated:
-        if request.method == 'POST':
-            report_device = request.POST.getlist('report_device')
-            report_measure = request.POST.getlist('report_measure')
-
-            print(f"Report Device: {report_device}")
-            print(f"Report Measure: {report_measure}")
-
-            for string in report_measure:
-                for value in report_device:
-                    if value in string:
-                        try:
-                            IDs = Device.objects.get(device_name=value)
-                        except Device.DoesNotExist:
-                            continue
-                        
-                        parts = string.split(value, 1)
-                        if len(parts) == 2:
-                            part1 = parts[0].strip(", :;")
-                            part2 = value
-                            
-                            # Find the register for this combination
-                            register_values = Register.objects.filter(name=part1, channel=IDs).last()
-                            if register_values:
-                                try:
-                                    first_modbus_data = ModbusData.objects.filter(
-                                        device_id=register_values.channel_id, 
-                                        register_id=register_values.id,
-                                        value__gt=0
-                                    ).first()
-                                    
-                                    last_modbus_data = ModbusData.objects.filter(
-                                        device_id=register_values.channel_id, 
-                                        register_id=register_values.id,
-                                        value__gt=0
-                                    ).last()
-                                    
-                                    first_value = first_modbus_data.value if first_modbus_data else "N/A"
-                                    last_value = last_modbus_data.value if last_modbus_data else "N/A"
-
-                                    first_local_timestamp = timezone.localtime(first_modbus_data.timestamp, timezone.get_current_timezone())  
-                                    last_local_timestamp = timezone.localtime(last_modbus_data.timestamp, timezone.get_current_timezone())  
-
-                                    total_measure = round((float(last_value) - float(first_value)))
-
-                                    measurements.append({
-                                        'device': part2,
-                                        'measure': part1,
-                                        'first_value': first_value + register_values.parameter_name,
-                                        'last_value': last_value + register_values.parameter_name,
-                                        'total_measure': f"{total_measure}  {register_values.parameter_name}",
-                                        'first_time': first_local_timestamp.strftime("%Y %b %d %I:%M %p"),
-                                        'last_time': last_local_timestamp.strftime("%Y %b %d %I:%M %p"),
-                                        'cost': f'{total_measure * 0.18} SAR'
-                                    })
-
-                                except Exception as e:
-                                    print(f"Error fetching Modbus data: {e}")
-                                    continue
-
-    context = {'form': form, 'measurements': measurements}
-    return render(request, 'dashboard.html', context)
 
 def build_tree(devices):
     # Create a dictionary to store the grouped devices
@@ -934,6 +866,72 @@ def diagrams_chart_graph(request, name):
 
     measure = Diagram_Charts.objects.get(device_id=name)
     graph = eval(measure.graph_1)
+
+    for item in graph:
+        register = Register.objects.filter(channel_id = name, name = item).first()
+        registers.append(register.id)
+
+    # print(registers)
+    modbus_data = ModbusData.objects.filter(device=name, register_id__in = registers).select_related('register').order_by('-id')
+
+    grouped_data = {}
+    unique_times = []
+    parameter_name = []
+
+    for item in modbus_data:
+        local_timestamp = timezone.localtime(item.timestamp, timezone.get_current_timezone())
+        time = local_timestamp.strftime("%Y %b %d %I:%M %p")
+
+        if time not in unique_times:
+            # Add the timestamp to the set
+            unique_times.append(time)
+
+    for item in modbus_data:
+        register_name = item.register.name
+        if register_name not in grouped_data:
+            # Initialize the entry with the required structure
+            grouped_data[register_name] = {
+                'name': f"{register_name} ({item.register.parameter_name})",
+                # 'id': item.id,
+                # 'device_id': item.device_id,
+                # 'register_id': item.register_id,
+                # 'timestamp': item.timestamp.isoformat(),
+                # 'register_address': item.register_address,
+                'value': [],  # Initialize an empty list for values
+                'polling_interval': item.polling_interval
+            }
+
+            parameter_name.append(item.register.parameter_name)
+        # Append the value to the list
+        grouped_data[register_name]['value'].append(f"{item.value}")
+
+    # Convert the grouped_data dictionary to a list of dictionaries
+    result = list(grouped_data.values())
+
+
+    graph = [f"{l} ({p})" for l, p in zip(graph, parameter_name)]
+    print(graph)
+    # for item in result:
+    #     print(item)
+
+    unique_times = sorted(unique_times)
+    legends = graph
+    response_data = {
+        'result': result,
+        'legends': legends,
+        'time':unique_times
+    }
+
+    return JsonResponse(response_data, safe=False)
+
+
+
+def diagrams_chart_graph_2(request, name):
+    registers = []
+    dict = {}
+
+    measure = Diagram_Charts.objects.get(device_id=name)
+    graph = eval(measure.graph_2)
 
     for item in graph:
         register = Register.objects.filter(channel_id = name, name = item).first()

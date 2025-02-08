@@ -199,3 +199,9 @@ class Diagram_Charts(models.Model):
     chart_6_5 = models.CharField(max_length=50)
 
     graph_1 = models.TextField()
+    graph_2 = models.TextField()
+
+
+class Electrical_Bill(models.Model):
+    devices = models.TextField()
+    measures = models.TextField()

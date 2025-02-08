@@ -380,6 +380,18 @@ class Diagram_Charts_Form(forms.ModelForm):
         label=''
     )
 
+    graph_2 = forms.MultipleChoiceField(
+        choices=all_measures,
+        required=False,
+        widget=forms.SelectMultiple(attrs={
+            "class": "selectpicker",
+            "data-width": "100%",
+            "multiple": None,
+            "data-live-search": "true"
+        }),
+        label=''
+    )
+
     def __init__(self, device_pk, *args, **kwargs):
         super(Diagram_Charts_Form, self).__init__(*args, **kwargs)
         
@@ -422,6 +434,7 @@ class Diagram_Charts_Form(forms.ModelForm):
         self.fields['chart_6_5'].choices = Measuerments
 
         self.fields["graph_1"].choices = Measuerments[1:]
+        self.fields["graph_2"].choices = Measuerments[1:]
 
     class Meta:
         model = Diagram_Charts
@@ -430,7 +443,47 @@ class Diagram_Charts_Form(forms.ModelForm):
         # fields = ["chart_1_title", "chart_2_title", "chart_1_measure"]
 
 
+class ElectricalBill(forms.ModelForm):
+    all_measures = []
+    devices = Device.objects.all()
+
+    device_choices = [('All_Devices', 'All Devices')] + [(device.device_name, device.device_name) for device in devices]
+    
+    for device in devices:
+        measures = Register.objects.filter(channel_id=device.id)
+        for measure in measures:
+            all_measures.append((f"{measure.name}, {measure.channel}", f"{measure.name}, {measure.channel}"))
+
+    report_device = forms.MultipleChoiceField(
+        choices=device_choices,
+        required=True,
+        widget=forms.SelectMultiple(attrs={
+            "class": "selectpicker",
+            "data-width": "100%",
+            "multiple": None,
+            "data-live-search": "true"
+        }),
+        label=''
+    )
+    report_measure = forms.MultipleChoiceField(
+        choices=all_measures,
+        required=True,
+        widget=forms.SelectMultiple(attrs={
+            "class": "selectpicker",
+            "data-width": "100%",
+            "multiple": None,
+            "data-live-search": "true"
+        }),
+        label=''
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(ElectricalBill, self).__init__(*args, **kwargs)
+        
+        if self.instance and self.instance.pk:
+            self.fields['report_device'].initial = self.instance.report_device
 
 
-
-
+    class Meta:
+        model = Electrical_Bill
+        fields = '__all__'
