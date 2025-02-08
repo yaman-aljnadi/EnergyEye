@@ -1,9 +1,10 @@
 
 from django.urls import path, include
 from . import views
+from .view.dashboard import dashboard
 
 urlpatterns = [
-    path('', views.dashboard, name='home'),
+    path('', dashboard, name='home'),
     path('login/', views.login_page, name='login_page'),
     path('logout/', views.logout_user, name='logout'),
     path('register/', views.register_user, name='register'),
@@ -17,7 +18,7 @@ urlpatterns = [
 
 
     path('devices/', views.devices, name='devices'),
-    path('dashboard/', views.dashboard, name='dashboard'),
+    path('dashboard/', dashboard, name='dashboard'),
 
     path('add_device/', views.add_device, name='add_device'),
     path('update_device/<int:pk>', views.update_device, name='update_device'),
@@ -55,6 +56,7 @@ urlpatterns = [
     path('diagrams/<int:pk>', views.diagrams_device, name='diagrams_device'),
     path('diagrams_chart_data/<str:name>/', views.diagrams_chart_data, name='diagrams_chart_data'),
     path('diagrams_chart_graph/<str:name>/', views.diagrams_chart_graph, name='diagrams_chart_graph'),
+    path('diagrams_chart_graph_2/<str:name>/', views.diagrams_chart_graph_2, name='diagrams_chart_graph_2'),
     path('device-tree/', views.device_tree_view, name='device_tree_view'),
     path('device_tree_view_element/<int:pk>', views.device_tree_view_element, name='device_tree_view_element'),
 ]

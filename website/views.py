@@ -32,8 +32,7 @@ import timeit
 import numpy as np
 
 def user_manual_view(request):
-    # file_path = os.path.join(settings.BASE_DIR, 'static', 'UserManual', 'UserManual_EnergyEye.pdf')
-    return FileResponse(open("F:/BCMI-YAMAN-PILOT-TEST/DCRM_ALBADAHA_PROJECT/DCRM_A_Production_Work/website/static/UserManual/UserManual_EnergyEye.pdf", 'rb'), content_type='application/pdf')
+    return FileResponse(open("./website/static/UserManual/UserManual_EnergyEye.pdf", 'rb'), content_type='application/pdf')
 
 def login_page(request):
 
@@ -44,12 +43,11 @@ def login_page(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('home')
+            return redirect('devices')
         else:
             messages.success(request, "Please Check Username and Password")
             return redirect('login_page')
     
-   
     else:
         # print(request.POST)
         return render(request, 'login_page.html', {})
@@ -345,24 +343,29 @@ def alarms(request):
 @login_required(login_url='login_page')
 def update_alarm(request, pk):
 
-    alarm_record = Alarm.objects.get(id=pk)
-    device = Device.objects.get(id =alarm_record.channel_id)
+    alarm_record_v2 = Alarm.objects.get(id=pk)
+    device = Device.objects.get(id =alarm_record_v2.channel_id)
 
-    form = AddAlarmForm(device_pk=alarm_record.channel_id, data=request.POST or None, instance=alarm_record)
+    form = AddAlarmForm(device_pk=alarm_record_v2.channel_id, data=request.POST or None, instance=alarm_record_v2)
 
-    form.fields["alarm_description"].initial = alarm_record.alarm_description
-    form.fields["alarm_min"].initial = alarm_record.alarm_min
-    form.fields["alarm_max"].initial = alarm_record.alarm_max
-    form.fields["alarm_emails"].initial = alarm_record.alarm_emails
-    form.fields["alarm_measure"].initial = alarm_record.alarm_measure
+    form.fields["alarm_description"].initial = alarm_record_v2.alarm_description
+    form.fields["alarm_min"].initial = alarm_record_v2.alarm_min
+    form.fields["alarm_max"].initial = alarm_record_v2.alarm_max
+    form.fields["alarm_emails"].initial = alarm_record_v2.alarm_emails
+    form.fields["alarm_measure"].initial = alarm_record_v2.alarm_measure
     if request.method == 'POST':
         if form.is_valid():
             alarm = form.save(commit=False)   
             alarm.channel = device
             form.save()
             return redirect('alarms')
+        else:
+            messages.success(request,"Error in updaing the alarm settings")
+            print(form.errors)
+            return redirect('alarms')
+
     else:
-        return render(request, 'update_alarm.html', {'alarm_record':alarm_record, 'form':form})
+        return render(request, 'update_alarm.html', {'alarm_record_v2':alarm_record_v2, 'form':form})
 
 @login_required(login_url='login_page')
 def delete_alarm(request, pk):
@@ -642,28 +645,6 @@ def historical_data(request, table_name):
     return render(request, 'historical_data.html', context)
 
 
-@login_required(login_url='login_page')
-# @cache_page(60 * 15)  # Cache this view for 15 minutes
-def dashboard(request):
-    chart_4_pre = []
-
-    devices = Device.objects.all()
-    alarms = Alarm.objects.all()
-    reports = Report.objects.all()
-
-    for item in reports:
-        item.report_device_length = len(eval(item.report_device))
-
-    num_triggred_alarms = Alarm.objects.filter(alarm_trigger='Yes').count()
-
-    context = {
-        'devices': devices,
-        'alarms': alarms,
-        'num_triggred_alarms': num_triggred_alarms,
-        'reports': reports,
-    }
-    return render(request, 'dashboard.html', context)
-
 
 def build_tree(devices):
     # Create a dictionary to store the grouped devices
@@ -720,7 +701,7 @@ def device_tree_view_element(request, pk):
         if device.connection_type == 'TCP':
             ip_address = device.ip_address
             port_conf = device.port_conf
-            c = ModbusClient(host=ip_address, port=int(port_conf), timeout=1)
+            c = ModbusClient(host=ip_address, port=int(port_conf), timeout=0.1)
             c.open()
             try:
                 for register_name in registers_list:
@@ -747,8 +728,8 @@ def device_tree_view_element(request, pk):
                         dict["chart_measure"].append(last_value)
                         
                     else:
-                        print("Failed to read from register")
-                        last_value = random.randint(0, 300)
+                        # print("Failed to read from register")
+                        last_value = random.randint(100, 300)
                         dict["chart_measure"].append(last_value)
 
             except Exception as e:
@@ -823,7 +804,7 @@ def diagrams_chart_data(request, name):
         if device.connection_type == 'TCP':
             ip_address = device.ip_address
             port_conf = device.port_conf
-            c = ModbusClient(host=ip_address, port=int(port_conf), timeout=1)
+            c = ModbusClient(host=ip_address, port=int(port_conf), timeout=0.1)
             c.open()
 
             try:
@@ -852,8 +833,8 @@ def diagrams_chart_data(request, name):
                             values_list.append([last_value, register.parameter_name])
                             
                         else:
-                            print("Failed to read from register")
-                            last_value = random.randint(0, 300)
+                            # print("Failed to read from register")
+                            last_value = random.randint(100, 300)
                             values_list.append([last_value, register.parameter_name])
                     else:
                         values_list.append("0")
@@ -864,7 +845,7 @@ def diagrams_chart_data(request, name):
         try:
             for chart_num in range(1, 7):  
                 for measure_num in range(1, 6):  
-                    print(values_list[chart_counter])
+                    # print(values_list[chart_counter])
                     field_name = f'chart_{chart_num}_{measure_num}_measure'
                     item[field_name] = values_list[chart_counter]
                     chart_counter = chart_counter + 1
@@ -885,6 +866,72 @@ def diagrams_chart_graph(request, name):
 
     measure = Diagram_Charts.objects.get(device_id=name)
     graph = eval(measure.graph_1)
+
+    for item in graph:
+        register = Register.objects.filter(channel_id = name, name = item).first()
+        registers.append(register.id)
+
+    # print(registers)
+    modbus_data = ModbusData.objects.filter(device=name, register_id__in = registers).select_related('register').order_by('-id')
+
+    grouped_data = {}
+    unique_times = []
+    parameter_name = []
+
+    for item in modbus_data:
+        local_timestamp = timezone.localtime(item.timestamp, timezone.get_current_timezone())
+        time = local_timestamp.strftime("%Y %b %d %I:%M %p")
+
+        if time not in unique_times:
+            # Add the timestamp to the set
+            unique_times.append(time)
+
+    for item in modbus_data:
+        register_name = item.register.name
+        if register_name not in grouped_data:
+            # Initialize the entry with the required structure
+            grouped_data[register_name] = {
+                'name': f"{register_name} ({item.register.parameter_name})",
+                # 'id': item.id,
+                # 'device_id': item.device_id,
+                # 'register_id': item.register_id,
+                # 'timestamp': item.timestamp.isoformat(),
+                # 'register_address': item.register_address,
+                'value': [],  # Initialize an empty list for values
+                'polling_interval': item.polling_interval
+            }
+
+            parameter_name.append(item.register.parameter_name)
+        # Append the value to the list
+        grouped_data[register_name]['value'].append(f"{item.value}")
+
+    # Convert the grouped_data dictionary to a list of dictionaries
+    result = list(grouped_data.values())
+
+
+    graph = [f"{l} ({p})" for l, p in zip(graph, parameter_name)]
+    print(graph)
+    # for item in result:
+    #     print(item)
+
+    unique_times = sorted(unique_times)
+    legends = graph
+    response_data = {
+        'result': result,
+        'legends': legends,
+        'time':unique_times
+    }
+
+    return JsonResponse(response_data, safe=False)
+
+
+
+def diagrams_chart_graph_2(request, name):
+    registers = []
+    dict = {}
+
+    measure = Diagram_Charts.objects.get(device_id=name)
+    graph = eval(measure.graph_2)
 
     for item in graph:
         register = Register.objects.filter(channel_id = name, name = item).first()
